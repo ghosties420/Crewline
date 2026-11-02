@@ -1,0 +1,24 @@
+# Local configuration, credentials and data
+.env
+.env.*
+*.env
+*.keystore
+*.jks
+*.pem
+*.key
+*.p12
+*.sqlite*
+*.db
+*.db-*
+backups/
+uploads/
+photos/
+# Generated builds and dependencies
+node_modules/
+android/build/
+*.apk
+*.aab
+*.idsig
+*.log
+__pycache__/
+.DS_Store
