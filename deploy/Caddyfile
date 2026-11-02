@@ -1,0 +1,7 @@
+# Replace crew.example.com with your real domain; its DNS must point to your server.
+crew.example.com {
+    request_body {
+        max_size 1MB
+    }
+    reverse_proxy 127.0.0.1:8080
+}

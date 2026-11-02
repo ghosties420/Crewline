@@ -1,0 +1,96 @@
+package nz.crewline.app;
+import android.app.*;import android.os.*;import android.Manifest;import android.content.*;import android.content.pm.PackageManager;import android.net.Uri;import android.webkit.*;import android.view.*;import org.json.*;import java.io.*;
+
+public class MainActivity extends Activity {
+ WebView web;Store store;String pendingId;JSONObject pendingTrack;String voiceRequest,voiceCall,photoRequest,alertRequest,locateRequest;boolean voiceRadio;volatile boolean radioForeground=false,radioFocused=false;android.location.LocationListener locateListener;
+ final String origin="https://appassets.androidplatform.net/";
+ public void onCreate(Bundle b){super.onCreate(b);store=new Store(this);web=new WebView(this);setContentView(web);
+  if(Build.VERSION.SDK_INT>=30)web.setOnApplyWindowInsetsListener((v,i)->{android.graphics.Insets s=i.getInsets(WindowInsets.Type.systemBars()|WindowInsets.Type.ime());v.setPadding(s.left,s.top,s.right,s.bottom);return i;});
+  WebSettings s=web.getSettings();s.setUserAgentString("Crewline/1.2 (Android; nz.crewline.app) "+s.getUserAgentString());s.setJavaScriptEnabled(true);s.setDomStorageEnabled(false);s.setAllowFileAccess(false);s.setAllowContentAccess(false);s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);s.setGeolocationEnabled(false);s.setSupportMultipleWindows(false);s.setJavaScriptCanOpenWindowsAutomatically(false);
+  web.setWebChromeClient(new WebChromeClient());web.addJavascriptInterface(new Bridge(),"Native");web.setWebViewClient(new WebViewClient(){
+   public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){Uri u=r.getUrl();if("https".equals(u.getScheme())&&"www.openstreetmap.org".equals(u.getHost()))try{startActivity(new Intent(Intent.ACTION_VIEW,u));}catch(Exception ignored){}return true;}
+   public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest r){if(!"appassets.androidplatform.net".equals(r.getUrl().getHost()))return null;String path=r.getUrl().getPath();if(path==null||path.contains(".."))return empty();try{String name=path.equals("/")?"index.html":path.substring(1);String mime=name.endsWith(".html")?"text/html":name.endsWith(".css")?"text/css":name.endsWith(".js")?"application/javascript":"text/plain";return new WebResourceResponse(mime,"UTF-8",getAssets().open(name));}catch(Exception e){return empty();}}
+   private WebResourceResponse empty(){return new WebResourceResponse("text/plain","UTF-8",404,"Not Found",null,new ByteArrayInputStream(new byte[0]));}
+  });web.loadUrl(origin);
+ }
+ void result(String id,Object data,String error){runOnUiThread(()->{if(!isFinishing()&&!isDestroyed())web.evaluateJavascript("window.nativeResult("+JSONObject.quote(id)+","+(data==null?"null":data.toString())+","+(error==null?"null":JSONObject.quote(error))+")",null);});}
+ JSONObject boot()throws Exception{JSONObject b=TrackingService.state(this);b.put("mapCameras",Store.prefs(this).getBoolean("mapCameras",true));b.put("signedIn",!Store.token(this).isEmpty());b.put("server",Store.prefs(this).getString("server",""));b.put("owner",Store.owner(this));b.put("lastLat",Store.prefs(this).getString("lastLat",""));b.put("lastLon",Store.prefs(this).getString("lastLon",""));b.put("voice",VoiceService.state(this));b.put("alerts",InboxService.instance!=null);b.put("communications",getIntent().getBooleanExtra("communications",false));return b;}
+ class Bridge {
+  @JavascriptInterface public void request(String id,String action,String payload){if("radioTalk".equals(action)){try{boolean held=new JSONObject(payload).optBoolean("held");VoiceService v=VoiceService.instance;if(v!=null&&v.radio)v.talkUntil=held&&radioForeground&&radioFocused?SystemClock.elapsedRealtime()+800:0;result(id,new JSONObject(),null);}catch(Exception e){result(id,null,e.getMessage());}return;}TrackingService.network.execute(()->{try{JSONObject b=new JSONObject(payload);Object out=new JSONObject();
+   switch(action){
+    case "boot":out=boot();break;
+    case "auth":{
+     if(TrackingService.instance!=null||VoiceService.instance!=null)throw new IOException("Stop your drive and call before changing account");
+     String url=b.getString("server").replaceAll("/+$","");String path=b.optBoolean("signup")?"/register":"/login";
+     JSONObject r=Api.callAt(url,"",path,"POST",b);Store.token(MainActivity.this,r.getString("token"));Store.prefs(MainActivity.this).edit().putString("server",url).commit();
+     JSONObject state=Api.call(MainActivity.this,"/state","GET",null);Store.prefs(MainActivity.this).edit().putString("owner",url+"|"+state.getJSONObject("me").getString("id")).commit();if(r.has("recoveryCode"))state.put("recoveryCode",r.getString("recoveryCode"));out=state;break;
+    }
+    case "api":{String path=b.getString("path");String route=path.split("[?]",2)[0];if(path.length()>1024||!route.matches("/(state|convoy-updates|profile|password|vehicles(?:/[a-f0-9]+)?|convoys(?:/[a-f0-9]+(?:/(?:join|leave|ready|start|finish|remove|restore))?)?|board(?:/[0-9]+)?|photos(?:/[a-f0-9]+)?|messages(?:/[0-9]+)?|calls(?:/[a-f0-9]+/(?:join|leave|decline|end))?|comms/poll|community|active-crew|crews(?:/[a-f0-9]+(?:/(?:apply|applications|members|leave))?)?|events(?:/[a-f0-9]+(?:/(?:invite|respond|rsvp|messages))?)?|preferences|blocks|reports|recovery-code|admin/(?:dashboard|signup|contact|users|reports|content))"))throw new IOException("Unsupported request");out=Api.call(MainActivity.this,path,b.optString("method","GET"),b.optJSONObject("body"));break;}
+    case "locate":runOnUiThread(()->locate(id));return;
+    case "cameraMap":Store.prefs(MainActivity.this).edit().putBoolean("mapCameras",b.optBoolean("enabled",true)).apply();break;
+    case "cameraData":out=CameraAlerts.read(MainActivity.this);break;
+    case "cameraUpdate":out=new JSONObject().put("count",CameraAlerts.update(MainActivity.this));break;
+    case "about":out=Api.callAt(b.getString("server").replaceAll("/+$",""),"","/about","GET",null);break;
+    case "recover":out=Api.callAt(b.getString("server").replaceAll("/+$",""),"","/recover","POST",b);break;
+    case "pickPhoto":runOnUiThread(()->{if(photoRequest!=null){result(id,null,"A photo picker is already open");return;}photoRequest=id;Intent pick=new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("image/*").addCategory(Intent.CATEGORY_OPENABLE);startActivityForResult(pick,70);});return;
+    case "voiceStart":runOnUiThread(()->startVoice(id,b.optString("call"),b.optBoolean("radio")));return;
+    case "voiceStop":runOnUiThread(()->stopService(new Intent(MainActivity.this,VoiceService.class)));break;
+    case "voiceState":out=VoiceService.state(MainActivity.this);break;
+    case "voiceMute":if(VoiceService.instance!=null)VoiceService.instance.muted=b.optBoolean("muted");break;
+    case "voiceSpeaker":runOnUiThread(()->{if(VoiceService.instance!=null)VoiceService.instance.speaker(b.optBoolean("speaker"));});break;
+    case "alerts":runOnUiThread(()->setAlerts(id,b.optBoolean("enabled")));return;
+    case "tracking":runOnUiThread(()->startTracking(id,b));return;
+    case "cells":{JSONObject cells=new JSONObject();cells.put("cells",store.cells(Store.owner(MainActivity.this)));out=cells;break;}
+    case "clearCells":store.clear(Store.owner(MainActivity.this));break;
+    case "navigate":{double lat=b.getDouble("lat"),lon=b.getDouble("lon");if(Math.abs(lat)>85||Math.abs(lon)>180)throw new IOException("Invalid destination");runOnUiThread(()->{try{startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("geo:0,0?q="+lat+","+lon+"("+Uri.encode(b.optString("title","Convoy"))+")")));}catch(Exception e){new AlertDialog.Builder(MainActivity.this).setMessage("Install a navigation app such as Organic Maps, OsmAnd or Google Maps.").setPositiveButton("OK",null).show();}});break;}
+    case "battery":runOnUiThread(()->startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.parse("package:"+getPackageName()))));break;
+    case "logout":case "deleteAccount":{
+     if(TrackingService.instance!=null||VoiceService.instance!=null)throw new IOException("Stop your drive and call first");stopService(new Intent(MainActivity.this,InboxService.class));
+     if(action.equals("deleteAccount")){Api.call(MainActivity.this,"/account","DELETE",b);store.clear(Store.owner(MainActivity.this));}
+     else {try{Api.call(MainActivity.this,"/logout","POST",null);}catch(Exception ignored){/* Local sign-out still works offline; remote marker expires. */}}
+     Store.token(MainActivity.this,"");Store.prefs(MainActivity.this).edit().remove("owner").remove("lastLat").remove("lastLon").commit();break;
+    }
+    default:throw new IOException("Unknown action");
+   }result(id,out,null);
+  }catch(Exception e){result(id,null,e.getMessage()==null?"Request failed":e.getMessage());}});}
+ }
+ void startTracking(String id,JSONObject b){try{
+  boolean sharing=b.optBoolean("sharing"),exploring=b.optBoolean("exploring"),cameras=b.optBoolean("cameras");
+  if((sharing||exploring||cameras)&&Store.token(this).isEmpty())throw new IOException("Sign in first");
+  if(sharing||exploring||cameras){if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){pendingId=id;pendingTrack=b;requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},50);return;}
+   if(Build.VERSION.SDK_INT>=33&&checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED){if(cameras){pendingId=id;pendingTrack=b;requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},73);return;}requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},51);}
+   startForegroundService(new Intent(this,TrackingService.class).putExtra("sharing",sharing).putExtra("exploring",exploring).putExtra("cameras",cameras));
+  }else stopService(new Intent(this,TrackingService.class));
+  result(id,new JSONObject().put("ok",true),null);
+ }catch(Exception e){result(id,null,e.getMessage());}}
+ public void onRequestPermissionsResult(int r,String[] p,int[] g){super.onRequestPermissionsResult(r,p,g);
+ if(r==76&&locateRequest!=null){String id=locateRequest;locateRequest=null;if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED)locate(id);else result(id,null,"Precise location permission is needed to use your location");}
+ if(r==71&&voiceRequest!=null){String request=voiceRequest,call=voiceCall;voiceRequest=null;if(checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED)startVoice(request,call,voiceRadio);else result(request,null,"Microphone permission is required for voice calls");}
+ if(r==72&&alertRequest!=null){String request=alertRequest;alertRequest=null;if(Build.VERSION.SDK_INT<33||checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)==PackageManager.PERMISSION_GRANTED)setAlerts(request,true);else result(request,null,"Enable notifications to receive call and message alerts");}
+ if(r==73&&pendingId!=null){String id=pendingId;JSONObject b=pendingTrack;pendingId=null;if(checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)==PackageManager.PERMISSION_GRANTED)startTracking(id,b);else result(id,null,"Camera alerts need notification permission for audible warnings");}
+ if(r==50&&pendingId!=null){String id=pendingId;JSONObject b=pendingTrack;pendingId=null;if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED)startTracking(id,b);else result(id,null,"Precise location is required to reveal roads and share a useful position");}}
+
+ void startVoice(String request,String call,boolean radio){try{if(VoiceService.instance!=null)throw new IOException("Finish your current call first");if(Store.token(this).isEmpty()||!call.matches("[a-f0-9]{48}"))throw new IOException("Sign in and select a call");if(checkSelfPermission(Manifest.permission.RECORD_AUDIO)!=PackageManager.PERMISSION_GRANTED){voiceRequest=request;voiceCall=call;voiceRadio=radio;requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},71);return;}startForegroundService(new Intent(this,VoiceService.class).putExtra("call",call).putExtra("radio",radio));result(request,new JSONObject().put("ok",true),null);}catch(Exception e){result(request,null,e.getMessage());}}
+ void setAlerts(String request,boolean enabled){try{if(enabled){if(Store.token(this).isEmpty())throw new IOException("Sign in first");if(Build.VERSION.SDK_INT>=33&&checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED){alertRequest=request;requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},72);return;}startForegroundService(new Intent(this,InboxService.class));}else stopService(new Intent(this,InboxService.class));result(request,new JSONObject().put("ok",true),null);}catch(Exception e){result(request,null,e.getMessage());}}
+ protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(intent.getBooleanExtra("communications",false))web.evaluateJavascript("window.openCommunications&&window.openCommunications()",null);}
+ protected void onActivityResult(int request,int code,Intent data){super.onActivityResult(request,code,data);if(request!=70||photoRequest==null)return;final String response=photoRequest;photoRequest=null;if(code!=RESULT_OK||data==null||data.getData()==null){result(response,new JSONObject(),null);return;}final Uri uri=data.getData();TrackingService.network.execute(()->{try{
+  android.graphics.BitmapFactory.Options options=new android.graphics.BitmapFactory.Options();options.inJustDecodeBounds=true;try(InputStream stream=getContentResolver().openInputStream(uri)){android.graphics.BitmapFactory.decodeStream(stream,null,options);}if(options.outWidth<=0||options.outHeight<=0)throw new IOException("Choose a supported image");options.inSampleSize=1;while(Math.max(options.outWidth,options.outHeight)/options.inSampleSize>1600)options.inSampleSize*=2;options.inJustDecodeBounds=false;
+  android.graphics.Bitmap bitmap;try(InputStream stream=getContentResolver().openInputStream(uri)){bitmap=android.graphics.BitmapFactory.decodeStream(stream,null,options);}if(bitmap==null)throw new IOException("Cannot read photo");
+  try(InputStream stream=getContentResolver().openInputStream(uri)){android.media.ExifInterface exif=new android.media.ExifInterface(stream);int o=exif.getAttributeInt(android.media.ExifInterface.TAG_ORIENTATION,1);android.graphics.Matrix matrix=new android.graphics.Matrix();if(o==3)matrix.postRotate(180);if(o==6)matrix.postRotate(90);if(o==8)matrix.postRotate(270);if(o==2)matrix.postScale(-1,1);if(o==4)matrix.postScale(1,-1);if(o==5){matrix.postRotate(90);matrix.postScale(-1,1);}if(o==7){matrix.postRotate(270);matrix.postScale(-1,1);}android.graphics.Bitmap rotated=android.graphics.Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);if(rotated!=bitmap){bitmap.recycle();bitmap=rotated;}}catch(IOException ignored){}
+  float scale=Math.min(1f,1280f/Math.max(bitmap.getWidth(),bitmap.getHeight()));if(scale<1){android.graphics.Bitmap small=android.graphics.Bitmap.createScaledBitmap(bitmap,Math.max(1,Math.round(bitmap.getWidth()*scale)),Math.max(1,Math.round(bitmap.getHeight()*scale)),true);bitmap.recycle();bitmap=small;}
+  ByteArrayOutputStream bytes=new ByteArrayOutputStream();int quality=85;do{bytes.reset();bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG,quality,bytes);quality-=10;}while(bytes.size()>440000&&quality>=35);bitmap.recycle();if(bytes.size()>450000)throw new IOException("Photo is too detailed; choose a smaller image");result(response,new JSONObject().put("data",android.util.Base64.encodeToString(bytes.toByteArray(),android.util.Base64.NO_WRAP)),null);
+ }catch(Exception e){result(response,null,e.getMessage());}});}
+ void locate(String id){
+  if(locateRequest!=null){result(id,null,"A location request is already running");return;}locateRequest=id;
+  if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},76);return;}
+  final android.location.LocationManager manager=(android.location.LocationManager)getSystemService(LOCATION_SERVICE);
+  locateListener=new android.location.LocationListener(){public void onLocationChanged(android.location.Location l){if(locateRequest==null||!l.hasAccuracy()||l.getAccuracy()>100||SystemClock.elapsedRealtimeNanos()-l.getElapsedRealtimeNanos()>30000000000L)return;String request=locateRequest;locateRequest=null;manager.removeUpdates(this);locateListener=null;try{result(request,new JSONObject().put("lat",l.getLatitude()).put("lon",l.getLongitude()),null);}catch(Exception e){result(request,null,e.getMessage());}}public void onStatusChanged(String p,int s,Bundle b){}public void onProviderEnabled(String p){}public void onProviderDisabled(String p){}};
+  try{boolean enabled=false;for(String provider:new String[]{android.location.LocationManager.GPS_PROVIDER,android.location.LocationManager.NETWORK_PROVIDER})if(manager.getAllProviders().contains(provider)&&manager.isProviderEnabled(provider)){enabled=true;manager.requestLocationUpdates(provider,1000,0,locateListener);}if(!enabled)throw new IOException("Enable phone Location, or select a map pin manually");
+   new Handler(getMainLooper()).postDelayed(()->{if(!id.equals(locateRequest))return;locateRequest=null;if(locateListener!=null){manager.removeUpdates(locateListener);locateListener=null;}result(id,null,"No fresh GPS fix yet. Try outdoors or tap the map.");},25000);
+  }catch(Exception e){locateRequest=null;if(locateListener!=null){manager.removeUpdates(locateListener);locateListener=null;}result(id,null,e.getMessage());}
+ }
+ protected void onResume(){super.onResume();radioForeground=true;}
+ public void onWindowFocusChanged(boolean focused){super.onWindowFocusChanged(focused);radioFocused=focused;if(!focused&&VoiceService.instance!=null&&VoiceService.instance.radio)VoiceService.instance.talkUntil=0;}
+ protected void onPause(){radioForeground=false;VoiceService v=VoiceService.instance;if(v!=null&&v.radio)v.talkUntil=0;super.onPause();}
+ protected void onDestroy(){if(locateListener!=null)((android.location.LocationManager)getSystemService(LOCATION_SERVICE)).removeUpdates(locateListener);locateRequest=null;web.removeJavascriptInterface("Native");web.destroy();store.close();super.onDestroy();}
+}

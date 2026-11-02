@@ -1,0 +1,24 @@
+[Unit]
+Description=Crewline private car crew API
+After=network.target
+[Service]
+Type=simple
+User=crewline
+Group=crewline
+WorkingDirectory=/opt/crewline
+EnvironmentFile=/etc/crewline.env
+ExecStart=/usr/bin/env node /opt/crewline/server.mjs
+Restart=on-failure
+RestartSec=3
+StateDirectory=crewline
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/crewline
+RestrictSUIDSGID=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+[Install]
+WantedBy=multi-user.target

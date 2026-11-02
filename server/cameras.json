@@ -1,0 +1,1208 @@
+{
+  "source": "NZ Transport Agency Waka Kotahi",
+  "sourceUrl": "https://www.nzta.govt.nz/travelling-on-our-roads/safety-cameras/about-safety-cameras/fixed-safety-camera-locations",
+  "sourceUpdated": "2026-10-01",
+  "checked": "2026-11-01",
+  "license": "CC BY-NC 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "coverage": "Published fixed camera records retrieved from NZTA. Completeness not guaranteed. No mobile cameras. Proximity only; no enforcement direction or speed limits supplied.",
+  "cameras": [
+    {
+      "id": "-36.726608,174.69771",
+      "region": "Auckland",
+      "suburb": "Albany",
+      "road": "Dairy Flat Highway and Oteha Valley Road",
+      "type": "Red light",
+      "lat": -36.726608,
+      "lon": 174.69771
+    },
+    {
+      "id": "-36.733279,174.707517",
+      "region": "Auckland",
+      "suburb": "Albany",
+      "road": "Albany Expressway and Mercari Way",
+      "type": "Red light",
+      "lat": -36.733279,
+      "lon": 174.707517
+    },
+    {
+      "id": "-37.04245,174.978749",
+      "region": "Auckland",
+      "suburb": "Ardmore",
+      "road": "Papakura-Clevedon Road",
+      "type": "Spot speed",
+      "lat": -37.04245,
+      "lon": 174.978749
+    },
+    {
+      "id": "-36.863567,174.760372",
+      "region": "Auckland",
+      "suburb": "Auckland CBD",
+      "road": "Newton Road and Symonds Street",
+      "type": "Red light",
+      "lat": -36.863567,
+      "lon": 174.760372
+    },
+    {
+      "id": "-36.854033,174.757917",
+      "region": "Auckland",
+      "suburb": "Auckland CBD",
+      "road": "Union Street and Nelson Street",
+      "type": "Red light",
+      "lat": -36.854033,
+      "lon": 174.757917
+    },
+    {
+      "id": "-36.85127,174.760078",
+      "region": "Auckland",
+      "suburb": "Auckland CBD",
+      "road": "Hobson Street and Cook Street",
+      "type": "Red light",
+      "lat": -36.85127,
+      "lon": 174.760078
+    },
+    {
+      "id": "-36.896632,174.701437",
+      "region": "Auckland",
+      "suburb": "Avondale",
+      "road": "New North Road and Blockhouse Bay Road",
+      "type": "Red light",
+      "lat": -36.896632,
+      "lon": 174.701437
+    },
+    {
+      "id": "-37.194201,174.975693",
+      "region": "Auckland",
+      "suburb": "Bombay",
+      "road": "Mill Road",
+      "type": "Spot speed",
+      "lat": -37.194201,
+      "lon": 174.975693
+    },
+    {
+      "id": "-36.897582,174.905981",
+      "region": "Auckland",
+      "suburb": "Bucklands Beach",
+      "road": "Pakuranga Road and Aviemore Drive",
+      "type": "Red light",
+      "lat": -36.897582,
+      "lon": 174.905981
+    },
+    {
+      "id": "-36.737975,174.62161",
+      "region": "Auckland",
+      "suburb": "Coatesville",
+      "road": "Coatesville Riverhead Highway",
+      "type": "Spot speed",
+      "lat": -36.737975,
+      "lon": 174.62161
+    },
+    {
+      "id": "-36.630709,174.65541",
+      "region": "Auckland",
+      "suburb": "Dairy Flat",
+      "road": "Dairy Flat Highway",
+      "type": "Spot speed",
+      "lat": -36.630709,
+      "lon": 174.65541
+    },
+    {
+      "id": "-36.632912,174.617412",
+      "region": "Auckland",
+      "suburb": "Dairy Flat",
+      "road": "Pine Valley Road - Camera A",
+      "type": "Average speed",
+      "lat": -36.632912,
+      "lon": 174.617412
+    },
+    {
+      "id": "-36.625879,174.648335",
+      "region": "Auckland",
+      "suburb": "Dairy Flat",
+      "road": "Pine Valley Road - Camera B",
+      "type": "Average speed",
+      "lat": -36.625879,
+      "lon": 174.648335
+    },
+    {
+      "id": "-36.640388,174.563899",
+      "region": "Auckland",
+      "suburb": "Dairy Flat/Waitoki",
+      "road": "Kahikatea Flat Road - Camera A",
+      "type": "Average speed",
+      "lat": -36.640388,
+      "lon": 174.563899
+    },
+    {
+      "id": "-36.643479,174.631107",
+      "region": "Auckland",
+      "suburb": "Dairy Flat/Waitoki",
+      "road": "Kahikatea Flat Road - Camera B",
+      "type": "Average speed",
+      "lat": -36.643479,
+      "lon": 174.631107
+    },
+    {
+      "id": "-36.351715,174.595823",
+      "region": "Auckland",
+      "suburb": "Dome Valley",
+      "road": "State Highway 1",
+      "type": "Spot speed",
+      "lat": -36.351715,
+      "lon": 174.595823
+    },
+    {
+      "id": "-36.941756,174.908678",
+      "region": "Auckland",
+      "suburb": "East Tamaki",
+      "road": "Te Irirangi Drive and Smales Road",
+      "type": "Red light",
+      "lat": -36.941756,
+      "lon": 174.908678
+    },
+    {
+      "id": "-36.894302,174.79942",
+      "region": "Auckland",
+      "suburb": "Ellerslie",
+      "road": "Main Highway and Great South Road",
+      "type": "Red light",
+      "lat": -36.894302,
+      "lon": 174.79942
+    },
+    {
+      "id": "-36.95459,174.904907",
+      "region": "Auckland",
+      "suburb": "Flat Bush",
+      "road": "Te Irirangi Drive and Accent Drive NB",
+      "type": "Red light",
+      "lat": -36.95459,
+      "lon": 174.904907
+    },
+    {
+      "id": "-36.909197,174.636851",
+      "region": "Auckland",
+      "suburb": "Glen Eden",
+      "road": "West Coast Road",
+      "type": "Spot speed",
+      "lat": -36.909197,
+      "lon": 174.636851
+    },
+    {
+      "id": "-37.225973,174.749171",
+      "region": "Auckland",
+      "suburb": "Glenbrook",
+      "road": "Glenbrook-Waiuku Road",
+      "type": "Spot speed",
+      "lat": -37.225973,
+      "lon": 174.749171
+    },
+    {
+      "id": "-37.1748873,174.7890976",
+      "region": "Auckland",
+      "suburb": "Glenbrook",
+      "road": "Glenbrook Road West - Camera A",
+      "type": "Average speed",
+      "lat": -37.1748873,
+      "lon": 174.7890976
+    },
+    {
+      "id": "-37.188864,174.766417",
+      "region": "Auckland",
+      "suburb": "Glenbrook",
+      "road": "Glenbrook Road West - Camera B",
+      "type": "Average speed",
+      "lat": -37.188864,
+      "lon": 174.766417
+    },
+    {
+      "id": "-36.782463,174.720762",
+      "region": "Auckland",
+      "suburb": "Glenfield",
+      "road": "Glenfield Road and Kaipatiki Road",
+      "type": "Red light",
+      "lat": -36.782463,
+      "lon": 174.720762
+    },
+    {
+      "id": "-36.92879,174.91201",
+      "region": "Auckland",
+      "suburb": "Golflands",
+      "road": "Ti Rakau Drive and Te Irirangi Drive",
+      "type": "Red light",
+      "lat": -36.92879,
+      "lon": 174.91201
+    },
+    {
+      "id": "-36.928403,174.912799",
+      "region": "Auckland",
+      "suburb": "Golflands",
+      "road": "Botany Road and Ti Rakau Drive",
+      "type": "Red light",
+      "lat": -36.928403,
+      "lon": 174.912799
+    },
+    {
+      "id": "-36.867017,174.739946",
+      "region": "Auckland",
+      "suburb": "Grey Lynn",
+      "road": "Great North Road",
+      "type": "Spot speed",
+      "lat": -36.867017,
+      "lon": 174.739946
+    },
+    {
+      "id": "-36.859408,174.752392",
+      "region": "Auckland",
+      "suburb": "Grey Lynn",
+      "road": "Ponsonby Road and Karangahape Road",
+      "type": "Red light",
+      "lat": -36.859408,
+      "lon": 174.752392
+    },
+    {
+      "id": "-36.899183,174.90189",
+      "region": "Auckland",
+      "suburb": "Half Moon Bay",
+      "road": "Pakuranga Road and Pidgeon Mountain Road",
+      "type": "Red light",
+      "lat": -36.899183,
+      "lon": 174.90189
+    },
+    {
+      "id": "-36.879898,174.636452",
+      "region": "Auckland",
+      "suburb": "Henderson",
+      "road": "Great North Road",
+      "type": "Spot speed",
+      "lat": -36.879898,
+      "lon": 174.636452
+    },
+    {
+      "id": "-36.86235,174.629207",
+      "region": "Auckland",
+      "suburb": "Henderson",
+      "road": "Lincoln Road and Pomaria Road",
+      "type": "Red light",
+      "lat": -36.86235,
+      "lon": 174.629207
+    },
+    {
+      "id": "-36.890585,174.594277",
+      "region": "Auckland",
+      "suburb": "Henderson Valley",
+      "road": "Candia Road",
+      "type": "Spot speed",
+      "lat": -36.890585,
+      "lon": 174.594277
+    },
+    {
+      "id": "-36.923741,174.752784",
+      "region": "Auckland",
+      "suburb": "Hillsborough",
+      "road": "Hillsborough Road",
+      "type": "Spot speed",
+      "lat": -36.923741,
+      "lon": 174.752784
+    },
+    {
+      "id": "-37.166933,174.810206",
+      "region": "Auckland",
+      "suburb": "Karaka/Kingseat",
+      "road": "Glenbrook Road East - Camera A",
+      "type": "Average speed",
+      "lat": -37.166933,
+      "lon": 174.810206
+    },
+    {
+      "id": "-37.143163,174.875309",
+      "region": "Auckland",
+      "suburb": "Karaka/Kingseat",
+      "road": "Glenbrook Road East - Camera B",
+      "type": "Average speed",
+      "lat": -37.143163,
+      "lon": 174.875309
+    },
+    {
+      "id": "-37.106792,174.852024",
+      "region": "Auckland",
+      "suburb": "Karaka",
+      "road": "Linwood Road",
+      "type": "Spot speed",
+      "lat": -37.106792,
+      "lon": 174.852024
+    },
+    {
+      "id": "-37.229079,174.701605",
+      "region": "Auckland",
+      "suburb": "Karioitahi",
+      "road": "Awhitu Road",
+      "type": "Spot speed",
+      "lat": -37.229079,
+      "lon": 174.701605
+    },
+    {
+      "id": "-37.137479,174.787539",
+      "region": "Auckland",
+      "suburb": "Kingseat",
+      "road": "McKenzie Road",
+      "type": "Spot speed",
+      "lat": -37.137479,
+      "lon": 174.787539
+    },
+    {
+      "id": "-36.777229,174.577123",
+      "region": "Auckland",
+      "suburb": "Kumeu",
+      "road": "Old North Road",
+      "type": "Spot speed",
+      "lat": -36.777229,
+      "lon": 174.577123
+    },
+    {
+      "id": "-36.717224,174.677066",
+      "region": "Auckland",
+      "suburb": "Lucas Heights",
+      "road": "Dairy Flat Highway",
+      "type": "Spot speed",
+      "lat": -36.717224,
+      "lon": 174.677066
+    },
+    {
+      "id": "-36.977466,174.803271",
+      "region": "Auckland",
+      "suburb": "Mangere",
+      "road": "Massey Road",
+      "type": "Spot speed",
+      "lat": -36.977466,
+      "lon": 174.803271
+    },
+    {
+      "id": "-36.96834,174.822548",
+      "region": "Auckland",
+      "suburb": "Mangere East",
+      "road": "Buckland Road and Massey Road",
+      "type": "Red light",
+      "lat": -36.96834,
+      "lon": 174.822548
+    },
+    {
+      "id": "-36.994796,174.874225",
+      "region": "Auckland",
+      "suburb": "Manukau City",
+      "road": "Lambie Drive and Manukau Station Road",
+      "type": "Red light",
+      "lat": -36.994796,
+      "lon": 174.874225
+    },
+    {
+      "id": "-36.997461,174.876164",
+      "region": "Auckland",
+      "suburb": "Manukau City",
+      "road": "Wiri Station Road and Lambie Drive Road",
+      "type": "Red light",
+      "lat": -36.997461,
+      "lon": 174.876164
+    },
+    {
+      "id": "-36.98732,174.881609",
+      "region": "Auckland",
+      "suburb": "Manukau City",
+      "road": "Great South Road and Cavendish Drive - S000085",
+      "type": "Red light",
+      "lat": -36.98732,
+      "lon": 174.881609
+    },
+    {
+      "id": "-36.9864,174.881137",
+      "region": "Auckland",
+      "suburb": "Manukau City",
+      "road": "Great South Road and Te Irirangi Drive - S000086",
+      "type": "Red light",
+      "lat": -36.9864,
+      "lon": 174.881137
+    },
+    {
+      "id": "-36.981192,174.877436",
+      "region": "Auckland",
+      "suburb": "Manukau City",
+      "road": "Great South Road and Reagan Road",
+      "type": "Red light",
+      "lat": -36.981192,
+      "lon": 174.877436
+    },
+    {
+      "id": "-36.909355,174.667928",
+      "region": "Auckland",
+      "suburb": "New Lynn",
+      "road": "Great North Road",
+      "type": "Spot speed",
+      "lat": -36.909355,
+      "lon": 174.667928
+    },
+    {
+      "id": "-36.905635,174.679308",
+      "region": "Auckland",
+      "suburb": "New Lynn",
+      "road": "Rata Street",
+      "type": "Spot speed",
+      "lat": -36.905635,
+      "lon": 174.679308
+    },
+    {
+      "id": "-36.884067,174.702845",
+      "region": "Auckland",
+      "suburb": "New Windsor",
+      "road": "Waterview Tunnel - S000060",
+      "type": "Spot speed",
+      "lat": -36.884067,
+      "lon": 174.702845
+    },
+    {
+      "id": "-36.884064,174.702864",
+      "region": "Auckland",
+      "suburb": "New Windsor",
+      "road": "Waterview Tunnel - S000061",
+      "type": "Spot speed",
+      "lat": -36.884064,
+      "lon": 174.702864
+    },
+    {
+      "id": "-36.884061,174.702905",
+      "region": "Auckland",
+      "suburb": "New Windsor",
+      "road": "Waterview Tunnel - S000062",
+      "type": "Spot speed",
+      "lat": -36.884061,
+      "lon": 174.702905
+    },
+    {
+      "id": "-36.88129,174.702715",
+      "region": "Auckland",
+      "suburb": "New Windsor",
+      "road": "Waterview Tunnel - S000063",
+      "type": "Spot speed",
+      "lat": -36.88129,
+      "lon": 174.702715
+    },
+    {
+      "id": "-36.881292,174.702692",
+      "region": "Auckland",
+      "suburb": "New Windsor",
+      "road": "Waterview Tunnel - S000064",
+      "type": "Spot speed",
+      "lat": -36.881292,
+      "lon": 174.702692
+    },
+    {
+      "id": "-36.881293,174.702651",
+      "region": "Auckland",
+      "suburb": "New Windsor",
+      "road": "Waterview Tunnel - S000065",
+      "type": "Spot speed",
+      "lat": -36.881293,
+      "lon": 174.702651
+    },
+    {
+      "id": "-36.856564,174.810317",
+      "region": "Auckland",
+      "suburb": "Ōrākei",
+      "road": "Ngapipi Road",
+      "type": "Spot speed",
+      "lat": -36.856564,
+      "lon": 174.810317
+    },
+    {
+      "id": "-36.954398,174.848658",
+      "region": "Auckland",
+      "suburb": "Ōtāhuhu",
+      "road": "Great South Road",
+      "type": "Spot speed",
+      "lat": -36.954398,
+      "lon": 174.848658
+    },
+    {
+      "id": "-36.962319,174.874408",
+      "region": "Auckland",
+      "suburb": "Ōtara",
+      "road": "East Tamaki Road and Bairds Road",
+      "type": "Red light",
+      "lat": -36.962319,
+      "lon": 174.874408
+    },
+    {
+      "id": "-36.962802,174.870127",
+      "region": "Auckland",
+      "suburb": "Ōtara",
+      "road": "East Tamaki Road and Ōtara Road",
+      "type": "Red light",
+      "lat": -36.962802,
+      "lon": 174.870127
+    },
+    {
+      "id": "-36.98931,174.874047",
+      "region": "Auckland",
+      "suburb": "Papatoetoe",
+      "road": "Cavendish Drive and Lambie Drive",
+      "type": "Red light",
+      "lat": -36.98931,
+      "lon": 174.874047
+    },
+    {
+      "id": "-36.940175,174.846025",
+      "region": "Auckland",
+      "suburb": "Papatoetoe",
+      "road": "Princes Street and Church Street",
+      "type": "Red light",
+      "lat": -36.940175,
+      "lon": 174.846025
+    },
+    {
+      "id": "-36.968302,174.85959",
+      "region": "Auckland",
+      "suburb": "Papatoetoe",
+      "road": "Great South Road and East Tamaki Road",
+      "type": "Red light",
+      "lat": -36.968302,
+      "lon": 174.85959
+    },
+    {
+      "id": "-36.847725,174.788837",
+      "region": "Auckland",
+      "suburb": "Parnell",
+      "road": "Tamaki Drive",
+      "type": "Spot speed",
+      "lat": -36.847725,
+      "lon": 174.788837
+    },
+    {
+      "id": "-37.155965,174.858779",
+      "region": "Auckland",
+      "suburb": "Patumahoe",
+      "road": "Ostrich Road",
+      "type": "Spot speed",
+      "lat": -37.155965,
+      "lon": 174.858779
+    },
+    {
+      "id": "-36.613,174.684843",
+      "region": "Auckland",
+      "suburb": "Red Beach",
+      "road": "Hibiscus Coast Highway and Millwater Parkway",
+      "type": "Red light",
+      "lat": -36.613,
+      "lon": 174.684843
+    },
+    {
+      "id": "-36.675162,174.686483",
+      "region": "Auckland",
+      "suburb": "Redvale",
+      "road": "East Coast Road - Camera A",
+      "type": "Average speed",
+      "lat": -36.675162,
+      "lon": 174.686483
+    },
+    {
+      "id": "-36.69386,174.707431",
+      "region": "Auckland",
+      "suburb": "Redvale",
+      "road": "East Coast Road - Camera B",
+      "type": "Average speed",
+      "lat": -36.69386,
+      "lon": 174.707431
+    },
+    {
+      "id": "-36.886705,174.800701",
+      "region": "Auckland",
+      "suburb": "Remuera",
+      "road": "Green Lane East and Ascot Avenue",
+      "type": "Red light",
+      "lat": -36.886705,
+      "lon": 174.800701
+    },
+    {
+      "id": "-36.885416,174.738868",
+      "region": "Auckland",
+      "suburb": "Sandringham",
+      "road": "Balmoral Road and Sandringham Road",
+      "type": "Red light",
+      "lat": -36.885416,
+      "lon": 174.738868
+    },
+    {
+      "id": "-36.922501,174.933412",
+      "region": "Auckland",
+      "suburb": "Shamrock Park/Whitford",
+      "road": "Whitford Road - Camera A",
+      "type": "Average speed",
+      "lat": -36.922501,
+      "lon": 174.933412
+    },
+    {
+      "id": "-36.94507,174.959009",
+      "region": "Auckland",
+      "suburb": "Shamrock Park/Whitford",
+      "road": "Whitford Road - Camera B",
+      "type": "Average speed",
+      "lat": -36.94507,
+      "lon": 174.959009
+    },
+    {
+      "id": "-36.796787,174.765623",
+      "region": "Auckland",
+      "suburb": "Takapuna",
+      "road": "Esmonde Road and Fred Thomas Drive",
+      "type": "Red light",
+      "lat": -36.796787,
+      "lon": 174.765623
+    },
+    {
+      "id": "-36.876589,174.646708",
+      "region": "Auckland",
+      "suburb": "Te Atatū South",
+      "road": "Te Atatū Road and McLeod Road",
+      "type": "Red light",
+      "lat": -36.876589,
+      "lon": 174.646708
+    },
+    {
+      "id": "-36.986409,174.919524",
+      "region": "Auckland",
+      "suburb": "Tōtara Park",
+      "road": "Murphys Road",
+      "type": "Spot speed",
+      "lat": -36.986409,
+      "lon": 174.919524
+    },
+    {
+      "id": "-36.999782,174.925266",
+      "region": "Auckland",
+      "suburb": "Tōtara Park",
+      "road": "Mill Road",
+      "type": "Spot speed",
+      "lat": -36.999782,
+      "lon": 174.925266
+    },
+    {
+      "id": "-36.844857,174.545163",
+      "region": "Auckland",
+      "suburb": "Waitakere",
+      "road": "Waitakere Road",
+      "type": "Spot speed",
+      "lat": -36.844857,
+      "lon": 174.545163
+    },
+    {
+      "id": "-37.250099,174.7613433",
+      "region": "Auckland",
+      "suburb": "Waiuku",
+      "road": "Waiuku Road - S000004",
+      "type": "Spot speed",
+      "lat": -37.250099,
+      "lon": 174.7613433
+    },
+    {
+      "id": "-37.217674,174.789431",
+      "region": "Auckland",
+      "suburb": "Waiuku",
+      "road": "Waiuku Road - S000074",
+      "type": "Spot speed",
+      "lat": -37.217674,
+      "lon": 174.789431
+    },
+    {
+      "id": "-36.381443,174.662872",
+      "region": "Auckland",
+      "suburb": "Warkworth",
+      "road": "Matakana Road - Camera A",
+      "type": "Average speed",
+      "lat": -36.381443,
+      "lon": 174.662872
+    },
+    {
+      "id": "-36.367498,174.707304",
+      "region": "Auckland",
+      "suburb": "Warkworth",
+      "road": "Matakana Road - Camera B",
+      "type": "Average speed",
+      "lat": -36.367498,
+      "lon": 174.707304
+    },
+    {
+      "id": "-37.038829,174.886099",
+      "region": "Auckland",
+      "suburb": "Wattle Downs",
+      "road": "Mahia Road",
+      "type": "Spot speed",
+      "lat": -37.038829,
+      "lon": 174.886099
+    },
+    {
+      "id": "-36.316471,174.538782",
+      "region": "Auckland",
+      "suburb": "Wellsford",
+      "road": "State Highway 1",
+      "type": "Spot speed",
+      "lat": -36.316471,
+      "lon": 174.538782
+    },
+    {
+      "id": "-36.74437,174.73952",
+      "region": "Auckland",
+      "suburb": "Windsor Park",
+      "road": "East Coast Road and Constellation Drive",
+      "type": "Red light",
+      "lat": -36.74437,
+      "lon": 174.73952
+    },
+    {
+      "id": "-41.122463,174.858308",
+      "region": "Wellington",
+      "suburb": "Aotea",
+      "road": "Whitford Brown Avenue",
+      "type": "Spot speed",
+      "lat": -41.122463,
+      "lon": 174.858308
+    },
+    {
+      "id": "-41.243898,174.92317",
+      "region": "Wellington",
+      "suburb": "Gracefield",
+      "road": "Wainuiomata Road",
+      "type": "Spot speed",
+      "lat": -41.243898,
+      "lon": 174.92317
+    },
+    {
+      "id": "-41.22535,174.853939",
+      "region": "Wellington",
+      "suburb": "Korokoro",
+      "road": "State Highway 2 – Hutt Road",
+      "type": "Spot speed",
+      "lat": -41.22535,
+      "lon": 174.853939
+    },
+    {
+      "id": "-41.227978,174.916309",
+      "region": "Wellington",
+      "suburb": "Lower Hutt",
+      "road": "Wainui Road",
+      "type": "Spot speed",
+      "lat": -41.227978,
+      "lon": 174.916309
+    },
+    {
+      "id": "-41.234247,174.807244",
+      "region": "Wellington",
+      "suburb": "Ngāuranga",
+      "road": "State Highway 1",
+      "type": "Spot speed",
+      "lat": -41.234247,
+      "lon": 174.807244
+    },
+    {
+      "id": "-41.296281,174.772107",
+      "region": "Wellington",
+      "suburb": "Te Aro",
+      "road": "State Highway 1 - Karo Drive",
+      "type": "Red light",
+      "lat": -41.296281,
+      "lon": 174.772107
+    },
+    {
+      "id": "-41.272157,174.777341",
+      "region": "Wellington",
+      "suburb": "Thorndon",
+      "road": "State Highway 1",
+      "type": "Spot speed",
+      "lat": -41.272157,
+      "lon": 174.777341
+    },
+    {
+      "id": "-41.106774,175.098155",
+      "region": "Wellington",
+      "suburb": "Upper Hutt",
+      "road": "Brown Owl - Camera A",
+      "type": "Average speed",
+      "lat": -41.106774,
+      "lon": 175.098155
+    },
+    {
+      "id": "-41.090347,175.138533",
+      "region": "Wellington",
+      "suburb": "Upper Hutt",
+      "road": "Te Mārua - Camera B",
+      "type": "Average speed",
+      "lat": -41.090347,
+      "lon": 175.138533
+    },
+    {
+      "id": "-43.660227,172.419931",
+      "region": "Canterbury",
+      "suburb": "Springston",
+      "road": "Leeston Road",
+      "type": "Spot speed",
+      "lat": -43.660227,
+      "lon": 172.419931
+    },
+    {
+      "id": "-43.539746,172.642046",
+      "region": "Canterbury",
+      "suburb": "Sydenham",
+      "road": "Moorhouse Avenue and Madras Street",
+      "type": "Red light",
+      "lat": -43.539746,
+      "lon": 172.642046
+    },
+    {
+      "id": "-43.539749,172.639199",
+      "region": "Canterbury",
+      "suburb": "Sydenham",
+      "road": "Moorhouse Avenue and Manchester Street",
+      "type": "Red light",
+      "lat": -43.539749,
+      "lon": 172.639199
+    },
+    {
+      "id": "-44.258444,171.273039",
+      "region": "Canterbury",
+      "suburb": "Temuka",
+      "road": "State Highway 1",
+      "type": "Spot speed",
+      "lat": -44.258444,
+      "lon": 171.273039
+    },
+    {
+      "id": "-44.000889,170.440915",
+      "region": "Canterbury",
+      "suburb": "Tekapo",
+      "road": "Tekapo to Simon’s Pass - Camera A",
+      "type": "Average speed",
+      "lat": -44.000889,
+      "lon": 170.440915
+    },
+    {
+      "id": "-44.18383,170.310145",
+      "region": "Canterbury",
+      "suburb": "Tekapo",
+      "road": "Tekapo to Simon’s Pass - Camera b",
+      "type": "Average speed",
+      "lat": -44.18383,
+      "lon": 170.310145
+    },
+    {
+      "id": "-44.19322,170.121497",
+      "region": "Canterbury",
+      "suburb": "Twizel",
+      "road": "State Highway 80 to Twizel - Camera C",
+      "type": "Average speed",
+      "lat": -44.19322,
+      "lon": 170.121497
+    },
+    {
+      "id": "-44.238032,170.116498",
+      "region": "Canterbury",
+      "suburb": "Twizel",
+      "road": "State Highway 80 to Twizel - Camera D",
+      "type": "Average speed",
+      "lat": -44.238032,
+      "lon": 170.116498
+    },
+    {
+      "id": "-36.178429,174.44949",
+      "region": "Northland",
+      "suburb": "Kaiwaka",
+      "road": "State Highway 1",
+      "type": "Spot speed",
+      "lat": -36.178429,
+      "lon": 174.44949
+    },
+    {
+      "id": "-35.650547,174.295622",
+      "region": "Northland",
+      "suburb": "Kamo",
+      "road": "State Highway 1",
+      "type": "Spot speed",
+      "lat": -35.650547,
+      "lon": 174.295622
+    },
+    {
+      "id": "-35.373223,174.049951",
+      "region": "Northland",
+      "suburb": "Kawakawa",
+      "road": "State Highway 1",
+      "type": "Spot speed",
+      "lat": -35.373223,
+      "lon": 174.049951
+    },
+    {
+      "id": "-35.129501,173.250187",
+      "region": "Northland",
+      "suburb": "Kaitaia",
+      "road": "Kaitaia-Awaroa - Camera A",
+      "type": "Average speed",
+      "lat": -35.129501,
+      "lon": 173.250187
+    },
+    {
+      "id": "-35.154689,173.230596",
+      "region": "Northland",
+      "suburb": "Kaitaia",
+      "road": "Kaitaia-Awaroa - Camera B",
+      "type": "Average speed",
+      "lat": -35.154689,
+      "lon": 173.230596
+    },
+    {
+      "id": "-35.160909,173.211435",
+      "region": "Northland",
+      "suburb": "Kaitaia",
+      "road": "Kaitaia-Awaroa - Camera C",
+      "type": "Average speed",
+      "lat": -35.160909,
+      "lon": 173.211435
+    },
+    {
+      "id": "-35.17171,173.158983",
+      "region": "Northland",
+      "suburb": "Kaitaia",
+      "road": "Kaitaia-Awaroa - Camera D",
+      "type": "Average speed",
+      "lat": -35.17171,
+      "lon": 173.158983
+    },
+    {
+      "id": "-37.932033,175.429783",
+      "region": "Waikato",
+      "suburb": "Cambridge",
+      "road": "Cambridge Road",
+      "type": "Spot speed",
+      "lat": -37.932033,
+      "lon": 175.429783
+    },
+    {
+      "id": "-37.246016,175.202307",
+      "region": "Waikato",
+      "suburb": "Maramarua",
+      "road": "State Highway 2",
+      "type": "Spot speed",
+      "lat": -37.246016,
+      "lon": 175.202307
+    },
+    {
+      "id": "-38.161434,175.267588",
+      "region": "Waikato",
+      "suburb": "Ōtorohanga",
+      "road": "Ōtorohanga Road",
+      "type": "Spot speed",
+      "lat": -38.161434,
+      "lon": 175.267588
+    },
+    {
+      "id": "-37.21677,175.095081",
+      "region": "Waikato",
+      "suburb": "Pōkeno/Mangatāwhiri",
+      "road": "State Highway 2 - Camera A",
+      "type": "Average speed",
+      "lat": -37.21677,
+      "lon": 175.095081
+    },
+    {
+      "id": "-37.226918,175.025847",
+      "region": "Waikato",
+      "suburb": "Pōkeno/Mangatāwhiri",
+      "road": "State Highway 2 - Camera B",
+      "type": "Average speed",
+      "lat": -37.226918,
+      "lon": 175.025847
+    },
+    {
+      "id": "-37.834477,174.92249",
+      "region": "Waikato",
+      "suburb": "Raglan",
+      "road": "State Highway 23",
+      "type": "Spot speed",
+      "lat": -37.834477,
+      "lon": 174.92249
+    },
+    {
+      "id": "-37.882904,175.902772",
+      "region": "Waikato",
+      "suburb": "Te Poi",
+      "road": "State Highway 29",
+      "type": "Spot speed",
+      "lat": -37.882904,
+      "lon": 175.902772
+    },
+    {
+      "id": "-37.401722,175.816673",
+      "region": "Waikato",
+      "suburb": "Waihi",
+      "road": "State Highway 2",
+      "type": "Spot speed",
+      "lat": -37.401722,
+      "lon": 175.816673
+    },
+    {
+      "id": "-37.411936,175.778087",
+      "region": "Waikato",
+      "suburb": "Waikino",
+      "road": "State Highway 2",
+      "type": "Spot speed",
+      "lat": -37.411936,
+      "lon": 175.778087
+    },
+    {
+      "id": "-38.180551,176.250324",
+      "region": "Bay of Plenty",
+      "suburb": "Tumunui",
+      "road": "State Highway 5 - Camera A",
+      "type": "Average speed",
+      "lat": -38.180551,
+      "lon": 176.250324
+    },
+    {
+      "id": "-38.303871,176.368983",
+      "region": "Bay of Plenty",
+      "suburb": "Tumunui",
+      "road": "State Highway 5 - Camera B",
+      "type": "Average speed",
+      "lat": -38.303871,
+      "lon": 176.368983
+    },
+    {
+      "id": "-37.8349,176.59801",
+      "region": "Bay of Plenty",
+      "suburb": "Matatā",
+      "road": "State Highway 2 - Camera A",
+      "type": "Average speed",
+      "lat": -37.8349,
+      "lon": 176.59801
+    },
+    {
+      "id": "-37.878729,176.728236",
+      "region": "Bay of Plenty",
+      "suburb": "Matatā",
+      "road": "State Highway 2 - Camera B",
+      "type": "Average speed",
+      "lat": -37.878729,
+      "lon": 176.728236
+    },
+    {
+      "id": "-39.629086,174.373697",
+      "region": "Taranaki",
+      "suburb": "Mokoia",
+      "road": "State Highway 3",
+      "type": "Spot speed",
+      "lat": -39.629086,
+      "lon": 174.373697
+    },
+    {
+      "id": "-40.405355,175.494354",
+      "region": "Manawatū-Whanganui",
+      "suburb": "Tiakitahuna",
+      "road": "State Highway 56",
+      "type": "Spot speed",
+      "lat": -40.405355,
+      "lon": 175.494354
+    },
+    {
+      "id": "-40.451161,175.294677",
+      "region": "Manawatū-Whanganui",
+      "suburb": "Foxton",
+      "road": "State Highway 1, Foxton - Camera A",
+      "type": "Average speed",
+      "lat": -40.451161,
+      "lon": 175.294677
+    },
+    {
+      "id": "-40.226514,175.418087",
+      "region": "Manawatū-Whanganui",
+      "suburb": "Sanson",
+      "road": "State Highway 1, Sanson - Camera B",
+      "type": "Average speed",
+      "lat": -40.226514,
+      "lon": 175.418087
+    },
+    {
+      "id": "-45.618861,168.461618",
+      "region": "Southland",
+      "suburb": "Southland",
+      "road": "Kingston - Camera A",
+      "type": "Average speed",
+      "lat": -45.618861,
+      "lon": 168.461618
+    },
+    {
+      "id": "-45.902138,170.448715",
+      "region": "Otago",
+      "suburb": "Dunedin",
+      "road": "Dunedin Southern Motorway",
+      "type": "Spot speed",
+      "lat": -45.902138,
+      "lon": 170.448715
+    },
+    {
+      "id": "-45.877703,170.498166",
+      "region": "Otago",
+      "suburb": "Dunedin Central",
+      "road": "MacLaggan Street",
+      "type": "Spot speed",
+      "lat": -45.877703,
+      "lon": 170.498166
+    },
+    {
+      "id": "-45.89058,170.496126",
+      "region": "Otago",
+      "suburb": "South Dunedin",
+      "road": "King Edward Street",
+      "type": "Spot speed",
+      "lat": -45.89058,
+      "lon": 170.496126
+    },
+    {
+      "id": "-45.922477,170.257433",
+      "region": "Otago",
+      "suburb": "Dunedin",
+      "road": "State Highway 1, Allanton to Waihola - Camera A",
+      "type": "Average speed",
+      "lat": -45.922477,
+      "lon": 170.257433
+    },
+    {
+      "id": "-46.021019,170.098328",
+      "region": "Otago",
+      "suburb": "Dunedin",
+      "road": "State Highway 1, Allanton to Waihola - Camera B",
+      "type": "Average speed",
+      "lat": -46.021019,
+      "lon": 170.098328
+    },
+    {
+      "id": "-45.102103,170.952438",
+      "region": "Otago",
+      "suburb": "Oamaru",
+      "road": "Wansbeck Street",
+      "type": "Spot speed",
+      "lat": -45.102103,
+      "lon": 170.952438
+    },
+    {
+      "id": "-46.402449,168.298669",
+      "region": "Southland",
+      "suburb": "Southland",
+      "road": "Ōtātara Road",
+      "type": "Spot speed",
+      "lat": -46.402449,
+      "lon": 168.298669
+    },
+    {
+      "id": "-45.339452,168.722622",
+      "region": "Southland",
+      "suburb": "Southland",
+      "road": "Kingston - Camera B",
+      "type": "Average speed",
+      "lat": -45.339452,
+      "lon": 168.722622
+    }
+  ]
+}

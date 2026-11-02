@@ -1,0 +1,20 @@
+package nz.crewline.app;
+import android.app.*;import android.content.*;import android.os.*;import java.util.*;import java.util.concurrent.*;import org.json.*;
+
+// Opt-in ongoing listener for self-hosted alerts, without Google/Firebase push services.
+public class InboxService extends Service {
+ static volatile InboxService instance;ScheduledExecutorService worker;String base,token;long lastMessage=-1,lastPost=-1,lastConvoy=-1;Set<String> notified=new HashSet<>();NotificationManager notifications;
+ public void onCreate(){super.onCreate();instance=this;base=Store.prefs(this).getString("server","");token=Store.token(this);notifications=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);notifications.createNotificationChannel(new NotificationChannel("inbox-service","Background message listener",NotificationManager.IMPORTANCE_LOW));notifications.createNotificationChannel(new NotificationChannel("incoming-call","Incoming crew calls",NotificationManager.IMPORTANCE_HIGH));notifications.createNotificationChannel(new NotificationChannel("new-message","New crew messages",NotificationManager.IMPORTANCE_DEFAULT));}
+ PendingIntent open(int request){return PendingIntent.getActivity(this,request,new Intent(this,MainActivity.class).putExtra("communications",true).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),PendingIntent.FLAG_IMMUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);}
+ public int onStartCommand(Intent intent,int flags,int id){if(intent==null||"STOP".equals(intent.getAction())){stopSelf();return START_NOT_STICKY;}if(worker!=null)return START_NOT_STICKY;
+  PendingIntent stop=PendingIntent.getService(this,8,new Intent(this,InboxService.class).setAction("STOP"),PendingIntent.FLAG_IMMUTABLE);
+  startForeground(53,new Notification.Builder(this,"inbox-service").setContentTitle("Crewline messages connected").setContentText("Checking for calls and messages • tap to open").setSmallIcon(android.R.drawable.ic_dialog_email).setContentIntent(open(9)).addAction(new Notification.Action.Builder(null,"Stop alerts",stop).build()).setOngoing(true).build());
+  worker=Executors.newSingleThreadScheduledExecutor();worker.scheduleWithFixedDelay(()->poll(),0,5,TimeUnit.SECONDS);return START_NOT_STICKY;
+ }
+ void poll(){try{JSONObject r=Api.callAt(base,token,"/comms/poll","GET",null);long message=r.optLong("messageId"),post=r.optLong("postId");if((lastMessage>=0&&message>lastMessage)||(lastPost>=0&&post>lastPost))notifications.notify(61,new Notification.Builder(this,"new-message").setSmallIcon(android.R.drawable.ic_dialog_email).setContentTitle("New Crewline message").setContentText("Open your board or messages to read it").setContentIntent(open(11)).setAutoCancel(true).build());lastMessage=message;lastPost=post;
+  long convoy=r.optLong("convoyUpdateId");if(convoy>0&&convoy>lastConvoy)notifications.notify(62,new Notification.Builder(this,"new-message").setSmallIcon(android.R.drawable.ic_dialog_info).setContentTitle("Convoy update").setContentText("Open Crewline → More → Convoy updates").setContentIntent(open(12)).setAutoCancel(true).build());lastConvoy=Math.max(lastConvoy,convoy);
+  JSONArray calls=r.optJSONArray("calls");boolean incoming=false;Set<String> active=new HashSet<>();if(calls!=null)for(int i=0;i<calls.length();i++){JSONObject c=calls.getJSONObject(i);String cid=c.getString("id");active.add(cid);if(c.optString("myStatus").equals("invited")){incoming=true;if(notified.add(cid))notifications.notify(60,new Notification.Builder(this,"incoming-call").setSmallIcon(android.R.drawable.ic_btn_speak_now).setContentTitle(c.optString("kind").equals("crew")?"Incoming crew call":c.optString("name")+" is calling").setContentText("Tap to open Crewline and answer").setCategory(Notification.CATEGORY_CALL).setContentIntent(open(10)).setAutoCancel(true).build());}}
+  notified.retainAll(active);if(!incoming)notifications.cancel(60);
+ }catch(Exception e){/* Retry after connectivity returns; microphone is never opened here. */}}
+ public void onDestroy(){instance=null;if(worker!=null)worker.shutdownNow();notifications.cancel(60);super.onDestroy();}public IBinder onBind(Intent intent){return null;}
+}
