@@ -1,12 +1,12 @@
 # Crewline
 
-Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.4.0**, pilot stage. No in-app purchases. iOS is not implemented.
+Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.5.0**, pilot stage. No in-app purchases. iOS is not implemented.
 
 - `android/`: Android client, bundled UI and build scripts.
 - `server/`: API, data storage, community features and voice relay.
 - `deploy/`: Linux / Docker setup, updates, backups and recovery.
 - `tests/`: API, migration, browser and native transport checks.
-- [Update guide](UPDATE-1.4.md): changes, installation and remaining launch work.
+- [Update guide](UPDATE-1.5.md): changes, installation and remaining launch work.
 
 ## Development checks
 

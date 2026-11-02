@@ -1,1 +1,1 @@
-99c18379f919d4c952f7735d0a99cced1f0efead5d9e82b8167d67c4c7c35c19  crewline-android-1.4.apk
+52daee2a51af962823165d73a94050f1b75141a35910d3be93db6d28ef43d97a  crewline-android-1.5.apk

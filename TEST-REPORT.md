@@ -1,3 +1,7 @@
+# 1.5 validation
+
+Nine API test files passed; browser flows include police/traffic reporting, map markers and removal. APK compiled and signature verified. See UPDATE-1.5.md for scope and device-test limitations.
+
 # 1.4 validation
 
 Eight API test files passed (including the new account-throttle test). Browser workflows passed with mocked native hardware. APK 140 / 1.4.0 compiled and v2/v3 signatures verified; certificate matches 1.3. Java TLS/WebSocket transport test passed. Local synthetic run: 50 clients, 500 empty-account read requests, zero errors; this is not a hosting-capacity benchmark. No physical Android, Bluetooth, real GPS or user-server deployment test was performed. See UPDATE-1.4.md.

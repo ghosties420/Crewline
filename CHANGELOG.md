@@ -1,3 +1,7 @@
+# 1.5 — Convoy road reports
+
+Five types of temporary map sightings, joined-member access, expiry, removal and clearing votes. See [UPDATE-1.5.md](UPDATE-1.5.md).
+
 # 1.4 — Android usability and convoy controls
 
 See UPDATE-1.4.md for all changes and installation instructions.

@@ -1,5 +1,6 @@
 // Crewline private, single-crew service. Node 24 built-ins only: no npm install.
 import http from 'node:http';
+import {createRoadReports} from './road-reports.mjs';
 import {readFileSync} from 'node:fs';
 const cameraData=JSON.parse(readFileSync(new URL('./cameras.json',import.meta.url))); 
 import {createConvoys} from './convoys.mjs';
@@ -28,13 +29,14 @@ const equal=(a,b)=>{a=Buffer.from(a);b=Buffer.from(b);return a.length===b.length
 function transaction(fn){db.exec('BEGIN IMMEDIATE');try{const r=fn();db.exec('COMMIT');return r;}catch(e){db.exec('ROLLBACK');throw e;}}
 const limits=new Map();
 function limit(key,n=120){const now=Date.now();let a=limits.get(key);if(!a||now-a.start>60000){a={start:now,n:0};limits.set(key,a);}if(++a.n>n)bad(429,'Too many requests; wait one minute');}
-function housekeeping(){const now=Date.now();db.prepare('DELETE FROM sessions WHERE expires<?').run(now);db.prepare('DELETE FROM invites WHERE expires<?').run(now);db.prepare('DELETE FROM locations WHERE updated<?').run(now-60000);for(const [k,v]of limits)if(now-v.start>60000)limits.delete(k);}
+function housekeeping(){const now=Date.now();db.prepare('DELETE FROM road_reports WHERE expires<=?').run(now);db.prepare('DELETE FROM sessions WHERE expires<?').run(now);db.prepare('DELETE FROM invites WHERE expires<?').run(now);db.prepare('DELETE FROM locations WHERE updated<?').run(now-60000);for(const [k,v]of limits)if(now-v.start>60000)limits.delete(k);}
 const cleanup=setInterval(housekeeping,30000);cleanup.unref();
 let community,safety,convoys;
 export const comms=createComms(db,{bad,text,transaction,limit,community:()=>community,safety:()=>safety,convoys:()=>convoys});
 community=createCommunity(db,{bad,text,transaction,limit});
 safety=createSafety(db,{bad,text,transaction,limit,comms});
 convoys=createConvoys(db,{bad,text,point,transaction,limit,community});
+const roadReports=createRoadReports(db,{bad,point,transaction,limit,convoys});
 export const server=http.createServer(async(req,res)=>{
  res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
  const send=data=>res.end(JSON.stringify(data));
@@ -42,7 +44,7 @@ export const server=http.createServer(async(req,res)=>{
   const url=new URL(req.url,'http://localhost'),path=url.pathname,method=req.method;
   let size=0,chunks=[];for await(const chunk of req){size+=chunk.length;if(size>(path==='/photos'?650000:32768))bad(413,'Request too large');chunks.push(chunk);}
   let b={};try{if(size)b=JSON.parse(Buffer.concat(chunks).toString());}catch{bad(400,'Invalid JSON');}if(!b||typeof b!=='object'||Array.isArray(b))bad(400,'Expected an object');
-  if(path==='/health'&&method==='GET'){db.prepare('SELECT 1').get();return send({ok:true,version:'1.4.0',protocol:4});}
+  if(path==='/health'&&method==='GET'){db.prepare('SELECT 1').get();return send({ok:true,version:'1.5.0',protocol:4});}
   if(path==='/about'&&method==='GET')return send(safety.about());
   if(path==='/signup-info'&&method==='GET')return send({open:safety.openSignup()});
   if(path==='/recover'&&method==='POST')return send(safety.recover(b));
@@ -68,6 +70,7 @@ export const server=http.createServer(async(req,res)=>{
   const session=db.prepare('SELECT user FROM sessions WHERE token=? AND expires>?').get(token,Date.now());if(!session)bad(401,'Sign in again');const user=session.user;if(safety.banned(user))bad(403,'This account is suspended');limit('u:'+user,240);
   if(path==='/cameras'&&method==='GET')return send(cameraData);
   const safe=safety.handle(path,method,b,user,url);if(safe!==undefined)return send(safe);
+  const roadResult=roadReports.handle(path,method,b,user);if(roadResult!==undefined)return send(roadResult);
   const convoyResult=convoys.handle(path,method,b,user);if(convoyResult!==undefined)return send(convoyResult);
   const social=community.handle(path,method,b,user,url);if(social!==undefined)return send(social);
   const handled=comms.handle(path,method,b,user,url);if(handled!==undefined)return send(handled);
