@@ -29,6 +29,7 @@ async function cameraSettings(p){const box=card('NZ safety camera alerts');p.app
 // Independent layer: GPS/member refreshes must not close camera popups or rebuild markers.
 async function loadCameraMap(target,tools){
  const data=await native('cameraData');if(map!==target||tab!=='Map')return;
+ loadSurveillance(target,tools).catch(e=>note('Extra camera layers: '+e.message));
  const layer=L.layerGroup();cameraLayer=layer;
  for(const c of data.cameras){
   const type=c.type==='Red light'?'red':c.type==='Average speed'?'average':'spot';
@@ -39,7 +40,7 @@ async function loadCameraMap(target,tools){
  }
  let visible=boot.mapCameras!==false;if(visible)layer.addTo(target);
  const controls=node('div',undefined,'row');
- const toggle=action(visible?'Hide cameras':'Show cameras',async()=>{const next=!visible;await native('cameraMap',{enabled:next});if(map!==target)return;visible=next;boot.mapCameras=visible;if(visible)layer.addTo(target);else target.removeLayer(layer);toggle.textContent=visible?'Hide cameras':'Show cameras';},'secondary');
- controls.append(toggle,action('View all cameras',async()=>{if(!data.cameras.length)return;if(!visible){await native('cameraMap',{enabled:true});if(map!==target)return;visible=true;boot.mapCameras=true;layer.addTo(target);toggle.textContent='Hide cameras';}target.fitBounds(data.cameras.map(c=>[c.lat,c.lon]),{padding:[24,24],maxZoom:15});},'secondary'));
+ const toggle=action(visible?'Hide speed cameras':'Show speed cameras',async()=>{const next=!visible;await native('cameraMap',{enabled:next});if(map!==target)return;visible=next;boot.mapCameras=visible;if(visible)layer.addTo(target);else target.removeLayer(layer);toggle.textContent=visible?'Hide speed cameras':'Show speed cameras';},'secondary');
+ controls.append(toggle,action('View all cameras',async()=>{if(!data.cameras.length)return;if(!visible){await native('cameraMap',{enabled:true});if(map!==target)return;visible=true;boot.mapCameras=true;layer.addTo(target);toggle.textContent='Hide speed cameras';}target.fitBounds(data.cameras.map(c=>[c.lat,c.lon]),{padding:[24,24],maxZoom:15});},'secondary'));
  tools.append(controls,node('div',data.cameras.length+' fixed cameras · S speed · R red light · A average speed','muted'),node('div','NZTA · updated '+data.sourceUpdated+' · mobile cameras not included','muted'));
 }

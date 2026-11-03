@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createRequire} from 'node:module';
+const {Timer,good}=createRequire(import.meta.url)('../android/app/src/main/assets/timing-engine.js');
+const fix=(t,speed,extra={})=>({t,speed,accuracy:4,speedAccuracy:.3,age:10,mock:false,...extra});
+function run(mode,accel=5){const timer=new Timer(mode);for(let t=0;t<=4000;t+=250)timer.feed(fix(t,0));let result;for(let t=4250;t<=30000&&!result;t+=250)result=timer.feed(fix(t,(t-4000)/1000*accel));return {timer,result};}
+test('standing 0–100 interpolates finish, includes start and has no rollout',()=>{const {result}=run('0-100');assert.ok(Math.abs(result.elapsedMs-5556)<2);assert.equal(result.finishKph,100);assert.equal(result.method,'phone-gps-v1');assert.ok(!('lat'in result));});
+test('distance timers integrate speed and solve partial crossing segment',()=>{for(const [mode,d]of [['eighth',201.168],['quarter',402.336],['half',804.672]]){const {result}=run(mode);assert.ok(Math.abs(result.elapsedMs-Math.sqrt(2*d/5)*1000)<2,mode);}});
+test('rolling start interpolates both thresholds',()=>{const {result}=run('100-200');assert.ok(Math.abs(result.elapsedMs-5556)<2);});
+test('moving start cannot start standing mode',()=>{const timer=new Timer('0-100');timer.feed(fix(0,10));timer.feed(fix(1000,20));assert.equal(timer.status,'armed');});
+test('bad, mock, stale, duplicate, gaps and speed jumps invalidate',()=>{for(const extra of [{accuracy:50},{speedAccuracy:2},{age:2000},{mock:true},{speed:null},{t:NaN}]){const timer=new Timer('0-100');timer.feed(fix(0,0));timer.feed(fix(500,0,extra));assert.equal(timer.status,'invalid');}for(const s of [fix(0,0),fix(2000,0),fix(500,20)]){const timer=new Timer('0-100');timer.feed(fix(0,0));timer.feed(s);assert.equal(timer.status,'invalid');}assert.equal(good(fix(0,0,{accuracy:null})),false);});
+test('cancel cannot subsequently finish',()=>{const timer=new Timer('0-100');timer.cancel('paused');assert.equal(timer.feed(fix(100,40)),null);assert.equal(timer.status,'invalid');});

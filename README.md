@@ -1,12 +1,12 @@
 # Crewline
 
-Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.5.0**, pilot stage. No in-app purchases. iOS is not implemented.
+Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.6.0**, pilot stage. No in-app purchases. iOS is not implemented.
 
 - `android/`: Android client, bundled UI and build scripts.
 - `server/`: API, data storage, community features and voice relay.
 - `deploy/`: Linux / Docker setup, updates, backups and recovery.
 - `tests/`: API, migration, browser and native transport checks.
-- [Update guide](UPDATE-1.5.md): changes, installation and remaining launch work.
+- [Update guide](UPDATE-1.6.md): changes, installation and remaining launch work.
 
 ## Development checks
 
@@ -228,3 +228,9 @@ See `TEST-REPORT.md` for executed checks and untested device/hosting boundaries.
 - `tests/`: API/migration/privacy tests, UI smoke test, Java transport and proximity checks.
 
 For a new installation use `sudo bash deploy/docker-start.sh`, then private Tailscale Serve. The current SQLite schema upgrades from native Crewline 1.0/1.1, not the early Expo 0.1 prototype.
+
+## GPS tools and camera layers (1.6)
+
+Map has separate speed-camera, ANPR and road-CCTV controls. More → Speedometer & timers has private GPS speed, closed-course timing and opt-in crew leaderboards. See [1.6 guide](UPDATE-1.6.md) for accuracy limits and privacy. No public leaderboard.
+
+The bundled surveillance subset is adapted from Jay J’s NZ CCTV Camera Map under CC BY-NC 4.0. It is for noncommercial use; a free app is not automatically noncommercial if used to support a commercial business. Before monetising or using commercially, obtain permission or replace the data. See [source collection](data/NZ-CCTV-SOURCES.md), [licence](data/NZ-CCTV-LICENSE.txt) and [import documentation](data/SURVEILLANCE.md). This licence is specific to that data; it does not grant rights over unrelated Crewline code.

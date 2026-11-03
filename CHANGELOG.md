@@ -1,3 +1,10 @@
+## 1.6.0 — 2026-11-03
+- Independent ANPR and road-CCTV layers with persisted visibility, viewport grouping and attribution.
+- Foreground GPS speedometer and closed-course 0–60 / 0–100 / 100–200 km/h and eighth / quarter / half mile timers.
+- Private account-scoped saved runs and personal bests; explicit crew sharing and per-category leaderboards.
+- Owner / crew organiser / site moderator removal; current membership, blocks and bans respected.
+- Startup waits for all bundled scripts before rendering.
+
 # 1.5 — Convoy road reports
 
 Five types of temporary map sightings, joined-member access, expiry, removal and clearing votes. See [UPDATE-1.5.md](UPDATE-1.5.md).
