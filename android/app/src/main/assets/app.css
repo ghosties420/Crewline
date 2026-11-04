@@ -36,3 +36,17 @@ body.map-fullscreen>header,body.map-fullscreen>#nav{display:none}
 body.map-fullscreen .map-menu>.map-tools{max-height:var(--map-menu-height,calc(100dvh - 105px))}
 body.map-fullscreen main{overflow:hidden}
 @media(max-width:360px){.map-toolbar{gap:5px}.map-toolbar>button,.map-menu>summary{padding:11px 9px;font-size:11px}}
+/* Convoy workspace: map first, actions in one scrollable overlay. */
+dialog.convoy-map-screen{position:fixed;inset:0;margin:0;width:100%;height:100%;max-width:none;max-height:none;padding:0;border:0;border-radius:0;overflow:hidden}
+dialog.convoy-map-screen[open]{display:flex;flex-direction:column}
+.convoy-map-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;background:#101d23;flex-shrink:0;border-bottom:1px solid #354951}
+.convoy-map-header h2{font-size:18px;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.convoy-map-header button{margin:0;min-height:44px}
+.convoy-map-area{position:relative;flex:1;min-height:80px;isolation:isolate;overflow:hidden}.convoy-map-canvas{position:absolute;inset:0;background:#25323c}
+.convoy-map-toolbar{position:absolute;top:10px;right:10px;z-index:1000}.convoy-map-menu>summary{list-style:none;background:#17272ff2;color:#eef5f4;border:1px solid #4b5e65;border-radius:14px;min-height:44px;padding:11px 14px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 16px #0006}
+.convoy-map-menu>summary::-webkit-details-marker{display:none}.convoy-map-menu>summary::after{content:' ▾'}.convoy-map-menu[open]>summary::after{content:' ▴'}.convoy-map-menu>summary:focus-visible{outline:3px solid #b4dfff}
+.convoy-map-tools{position:absolute;top:54px;right:0;width:min(360px,calc(100vw - 20px));max-height:var(--convoy-options-height,65dvh);overflow:auto;overscroll-behavior:contain;background:#111e25fa;padding:16px;border:1px solid #455a63;border-radius:18px;box-shadow:0 12px 32px #0008}
+.convoy-map-tools>.card{padding:0;border:0;background:none;margin:0 0 16px}.convoy-map-tools button{width:100%;margin:5px 0;min-height:44px}.convoy-map-tools .member-row button{width:auto}.convoy-map-tools h3{margin:16px 0 8px}.convoy-map-tools .road-buttons{display:grid;grid-template-columns:1fr 1fr;gap:6px}.convoy-map-tools .road-panel{margin-top:16px}
+.convoy-map-centre{position:absolute;right:10px;bottom:28px;z-index:999;box-shadow:0 3px 16px #0006;border:1px solid #4b5e65;margin:0;min-height:44px}
+.convoy-map-screen>#callBar{max-height:35dvh;overflow:auto;padding:10px 14px}.convoy-map-screen>#callBar[hidden]{display:none}
+/* Directions remain below the map tools; radio remains outside the map area. */
+.convoy-directions{position:absolute;bottom:28px;left:8px;right:8px;z-index:700;background:var(--surface,#17202a);border:1px solid #506071;border-radius:14px;padding:12px;max-height:42%;overflow:auto;box-shadow:0 4px 20px #0008}.convoy-directions[hidden]{display:none}.convoy-directions p{margin:6px 0}.convoy-next-turn{font-size:18px;font-weight:700}.convoy-directions .row{justify-content:space-between}.convoy-directions button{padding:8px}.convoy-directions li{margin:10px 0}.convoy-directions summary{cursor:pointer}.convoy-map-area:has(.convoy-directions:not([hidden])) .convoy-map-centre{bottom:auto;top:64px}
