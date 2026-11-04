@@ -1,3 +1,7 @@
+## 1.6.1 validation — 4 November 2026
+
+Android APK 161 / 1.6.1 builds and verifies with the existing pilot certificate. Browser drive/map and full UI regression suites pass. Map checks cover full-screen sizing, zoom/centre preservation, dropdown open/close, camera switches and 320px portrait / 844px landscape layouts. Screenshots inspected. Native hardware is mocked and map tiles are blocked in browser tests; phone rotation/touch still needs device verification. Server is unchanged from 1.6.0.
+
 # 1.6 validation — 3 November 2026
 
 - 16 Node tests pass across API, upgrade and pure timing suites. New coverage: consent, crew isolation, per-category rankings, moderation/removal, tombstones, banned/departed members, private submission management, interpolated acceleration and distance finishes, rolling starts, bad/mock/stale GPS and cancellation.

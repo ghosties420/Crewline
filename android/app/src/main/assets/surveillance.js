@@ -3,7 +3,7 @@ async function loadSurveillance(target,tools){
  const data=await native('surveillanceData');if(map!==target||!tools.isConnected)return;
  const all=data.cameras||[],visible={anpr:!!boot.mapAnpr,cctv:!!boot.mapCctv};const layer=L.layerGroup().addTo(target),canvas=L.canvas({padding:.2});
  const counts={anpr:all.filter(c=>c.type==='anpr').length,cctv:all.filter(c=>c.type==='cctv').length};
- const controls=node('details',undefined,'camera-options');controls.append(node('summary','ANPR & road CCTV layers'));
+ const controls=node('section',undefined,'camera-options');controls.append(node('h3','ANPR & road CCTV layers'));
  const row=node('div',undefined,'row');
  for(const kind of ['anpr','cctv']){const title=kind==='anpr'?'ANPR':'Road CCTV';const b=action('',async()=>{const next=!visible[kind];await native('mapLayer',{layer:kind,enabled:next});visible[kind]=next;boot[kind==='anpr'?'mapAnpr':'mapCctv']=next;b.textContent=(next?'Hide ':'Show ')+title;b.setAttribute('aria-pressed',String(next));draw();},'secondary');b.textContent=(visible[kind]?'Hide ':'Show ')+title;b.setAttribute('aria-pressed',String(visible[kind]));row.append(b);}
  controls.append(row,node('p',counts.anpr+' ANPR · '+counts.cctv+' road CCTV · public records, incomplete.','muted'),node('p','Pins may be old or approximate. Road-address matches do not confirm field of view. These layers do not trigger speed-camera alerts.','muted'));

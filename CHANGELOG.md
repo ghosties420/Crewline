@@ -1,3 +1,10 @@
+## 1.6.1 — 2026-11-04
+- Full-screen Map and Explore modes with a visible exit button.
+- Map options dropdown replaces the bottom control panel.
+- Centre-on-me stays visible; all camera switches are grouped in the dropdown.
+- Responsive Leaflet resizing preserves map position and zoom.
+- No server changes; compatible with server 1.6.0.
+
 ## 1.6.0 — 2026-11-03
 - Independent ANPR and road-CCTV layers with persisted visibility, viewport grouping and attribution.
 - Foreground GPS speedometer and closed-course 0–60 / 0–100 / 100–200 km/h and eighth / quarter / half mile timers.

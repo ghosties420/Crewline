@@ -1,12 +1,12 @@
 # Crewline
 
-Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.6.0**, pilot stage. No in-app purchases. iOS is not implemented.
+Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.6.1**, pilot stage. No in-app purchases. iOS is not implemented.
 
 - `android/`: Android client, bundled UI and build scripts.
 - `server/`: API, data storage, community features and voice relay.
 - `deploy/`: Linux / Docker setup, updates, backups and recovery.
 - `tests/`: API, migration, browser and native transport checks.
-- [Update guide](UPDATE-1.6.md): changes, installation and remaining launch work.
+- [Update guide](UPDATE-1.6.1.md): changes, installation and remaining launch work.
 
 ## Development checks
 
@@ -234,3 +234,6 @@ For a new installation use `sudo bash deploy/docker-start.sh`, then private Tail
 Map has separate speed-camera, ANPR and road-CCTV controls. More → Speedometer & timers has private GPS speed, closed-course timing and opt-in crew leaderboards. See [1.6 guide](UPDATE-1.6.md) for accuracy limits and privacy. No public leaderboard.
 
 The bundled surveillance subset is adapted from Jay J’s NZ CCTV Camera Map under CC BY-NC 4.0. It is for noncommercial use; a free app is not automatically noncommercial if used to support a commercial business. Before monetising or using commercially, obtain permission or replace the data. See [source collection](data/NZ-CCTV-SOURCES.md), [licence](data/NZ-CCTV-LICENSE.txt) and [import documentation](data/SURVEILLANCE.md). This licence is specific to that data; it does not grant rights over unrelated Crewline code.
+
+### Full-screen map (1.6.1)
+Map and Explore have a Full screen / Exit full screen button. Map options opens the floating controls, including all three camera switches on Map. See UPDATE-1.6.1.md. Android-only update; server remains 1.6.0.
