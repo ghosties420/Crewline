@@ -1,5 +1,7 @@
 // Crewline private, single-crew service. Node 24 built-ins only: no npm install.
 import http from 'node:http';
+import {createRouting} from './routing.mjs';
+import {createPerformance} from './performance.mjs';
 import {createRoadReports} from './road-reports.mjs';
 import {readFileSync} from 'node:fs';
 const cameraData=JSON.parse(readFileSync(new URL('./cameras.json',import.meta.url))); 
@@ -37,6 +39,8 @@ community=createCommunity(db,{bad,text,transaction,limit});
 safety=createSafety(db,{bad,text,transaction,limit,comms});
 convoys=createConvoys(db,{bad,text,point,transaction,limit,community});
 const roadReports=createRoadReports(db,{bad,point,transaction,limit,convoys});
+const routing=createRouting({bad,point,limit,convoys});
+const performance=createPerformance(db,{bad,text,limit,community,safety});
 export const server=http.createServer(async(req,res)=>{
  res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
  const send=data=>res.end(JSON.stringify(data));
@@ -44,7 +48,7 @@ export const server=http.createServer(async(req,res)=>{
   const url=new URL(req.url,'http://localhost'),path=url.pathname,method=req.method;
   let size=0,chunks=[];for await(const chunk of req){size+=chunk.length;if(size>(path==='/photos'?650000:32768))bad(413,'Request too large');chunks.push(chunk);}
   let b={};try{if(size)b=JSON.parse(Buffer.concat(chunks).toString());}catch{bad(400,'Invalid JSON');}if(!b||typeof b!=='object'||Array.isArray(b))bad(400,'Expected an object');
-  if(path==='/health'&&method==='GET'){db.prepare('SELECT 1').get();return send({ok:true,version:'1.5.0',protocol:4});}
+  if(path==='/health'&&method==='GET'){db.prepare('SELECT 1').get();return send({ok:true,version:'1.7.0',protocol:4});}
   if(path==='/about'&&method==='GET')return send(safety.about());
   if(path==='/signup-info'&&method==='GET')return send({open:safety.openSignup()});
   if(path==='/recover'&&method==='POST')return send(safety.recover(b));
@@ -69,8 +73,10 @@ export const server=http.createServer(async(req,res)=>{
   const token=digest(String(req.headers.authorization||'').replace(/^Bearer /,''));
   const session=db.prepare('SELECT user FROM sessions WHERE token=? AND expires>?').get(token,Date.now());if(!session)bad(401,'Sign in again');const user=session.user;if(safety.banned(user))bad(403,'This account is suspended');limit('u:'+user,240);
   if(path==='/cameras'&&method==='GET')return send(cameraData);
+  const perf=performance.handle(path,method,b,user,url);if(perf!==undefined)return send(perf);
   const safe=safety.handle(path,method,b,user,url);if(safe!==undefined)return send(safe);
   const roadResult=roadReports.handle(path,method,b,user);if(roadResult!==undefined)return send(roadResult);
+  const routeResult=await routing(path,method,b,user);if(routeResult!==undefined)return send(routeResult);
   const convoyResult=convoys.handle(path,method,b,user);if(convoyResult!==undefined)return send(convoyResult);
   const social=community.handle(path,method,b,user,url);if(social!==undefined)return send(social);
   const handled=comms.handle(path,method,b,user,url);if(handled!==undefined)return send(handled);
@@ -100,4 +106,4 @@ export const server=http.createServer(async(req,res)=>{
 });
 comms.attach(server);
 server.maxConnections=200;server.requestTimeout=15000;server.headersTimeout=10000;server.on('close',()=>clearInterval(cleanup));
-if(process.env.NODE_ENV!=='test')server.listen(Number(process.env.PORT||8080),process.env.HOST||'127.0.0.1',()=>console.log('Crewline 1.3 listening'));
+if(process.env.NODE_ENV!=='test')server.listen(Number(process.env.PORT||8080),process.env.HOST||'127.0.0.1',()=>console.log('Crewline 1.6 listening'));

@@ -1,3 +1,16 @@
+## 1.6.1 validation — 4 November 2026
+
+Android APK 161 / 1.6.1 builds and verifies with the existing pilot certificate. Browser drive/map and full UI regression suites pass. Map checks cover full-screen sizing, zoom/centre preservation, dropdown open/close, camera switches and 320px portrait / 844px landscape layouts. Screenshots inspected. Native hardware is mocked and map tiles are blocked in browser tests; phone rotation/touch still needs device verification. Server is unchanged from 1.6.0.
+
+# 1.6 validation — 3 November 2026
+
+- 16 Node tests pass across API, upgrade and pure timing suites. New coverage: consent, crew isolation, per-category rankings, moderation/removal, tombstones, banned/departed members, private submission management, interpolated acceleration and distance finishes, rolling starts, bad/mock/stale GPS and cancellation.
+- Full existing browser smoke suite and new driving-tools workflow pass against a real local API. Native GPS/storage bridge mocked; no physical GPS. Tests cover independent camera toggles, account-private run storage, explicit sharing, leaderboard/local deletion, stale speed display, lifecycle cleanup and 320-pixel layout. Screenshots visually inspected.
+- Native Java TLS/WebSocket voice transport regression passes.
+- APK 160 / 1.6.0 compiles; v2/v3 signatures verify. SHA-256 certificate matches 1.5: c311226ee43339677014e165cfefd4b56c9f203b2ae21e2e5580382c1e3725c6. Same pilot test certificate; not a production release key.
+- Source locally matched all GitHub main blobs at bf491ae6239723b37fd52bc4b933d24c4af4a932 before edits. Source packaging excludes keys, configuration, user data, dependencies and builds.
+- No device installation, real timing accuracy, Android permission/lifecycle, battery, GPS, Bluetooth or user-server deployment has been verified here.
+
 # 1.5 validation
 
 Nine API test files passed; browser flows include police/traffic reporting, map markers and removal. APK compiled and signature verified. See UPDATE-1.5.md for scope and device-test limitations.

@@ -1,12 +1,12 @@
 # Crewline
 
-Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.5.0**, pilot stage. No in-app purchases. iOS is not implemented.
+Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.7.2**, pilot stage. No in-app purchases. iOS is not implemented.
 
 - `android/`: Android client, bundled UI and build scripts.
 - `server/`: API, data storage, community features and voice relay.
 - `deploy/`: Linux / Docker setup, updates, backups and recovery.
 - `tests/`: API, migration, browser and native transport checks.
-- [Update guide](UPDATE-1.5.md): changes, installation and remaining launch work.
+- [Update guide](UPDATE-1.7.2.md): changes, installation and remaining launch work.
 
 ## Development checks
 
@@ -228,3 +228,21 @@ See `TEST-REPORT.md` for executed checks and untested device/hosting boundaries.
 - `tests/`: API/migration/privacy tests, UI smoke test, Java transport and proximity checks.
 
 For a new installation use `sudo bash deploy/docker-start.sh`, then private Tailscale Serve. The current SQLite schema upgrades from native Crewline 1.0/1.1, not the early Expo 0.1 prototype.
+
+## GPS tools and camera layers (1.6)
+
+Map has separate speed-camera, ANPR and road-CCTV controls. More → Speedometer & timers has private GPS speed, closed-course timing and opt-in crew leaderboards. See [1.6 guide](UPDATE-1.6.md) for accuracy limits and privacy. No public leaderboard.
+
+The bundled surveillance subset is adapted from Jay J’s NZ CCTV Camera Map under CC BY-NC 4.0. It is for noncommercial use; a free app is not automatically noncommercial if used to support a commercial business. Before monetising or using commercially, obtain permission or replace the data. See [source collection](data/NZ-CCTV-SOURCES.md), [licence](data/NZ-CCTV-LICENSE.txt) and [import documentation](data/SURVEILLANCE.md). This licence is specific to that data; it does not grant rights over unrelated Crewline code.
+
+### Full-screen map (1.6.1)
+Map and Explore have a Full screen / Exit full screen button. Map options opens the floating controls, including all three camera switches on Map. See UPDATE-1.6.1.md. Android-only update; server remains 1.6.0.
+
+### Convoy map and directions (1.7)
+Joining or viewing a convoy opens its full-screen map. Convoy options holds readiness, radio, pings and organiser tools; push-to-talk stays available on the map. Directions to the meeting, destination or stops stay inside Crewline, with a route line, foreground location updates, visual maneuver guidance and manual recalculation. Update both server and APK. See UPDATE-1.7.md for routing-provider disclosure, setup and limitations.
+
+### Continuous navigation GPS (1.7.1)
+Navigation follows automatically using a dedicated foreground GPS listener and smooth movement between fixes. Actual cadence depends on the phone. Drag to browse, then Follow me to resume. See UPDATE-1.7.1.md. Server stays at 1.7.0.
+
+### One-tap convoy pings (1.7.2)
+Five left-side map buttons send police, speed-camera, checkpoint, roadworks and traffic pings directly at your current location. Feedback includes an optional Undo. The options menu retains manual placement. See UPDATE-1.7.2.md; server remains 1.7.0.

@@ -7,7 +7,7 @@ bt="$ANDROID_SDK_ROOT/build-tools/35.0.0"
 platform="$ANDROID_SDK_ROOT/platforms/android-35/android.jar"
 mkdir -p build/classes build/dex
 "$bt/aapt2" compile --dir app/src/main/res -o build/resources.zip
-"$bt/aapt2" link -o build/base.apk -I "$platform" --manifest app/src/main/AndroidManifest.xml -A app/src/main/assets --min-sdk-version 26 --target-sdk-version 35 --version-code 150 --version-name 1.5.0 build/resources.zip
+"$bt/aapt2" link -o build/base.apk -I "$platform" --manifest app/src/main/AndroidManifest.xml -A app/src/main/assets --min-sdk-version 26 --target-sdk-version 35 --version-code 172 --version-name 1.7.2 build/resources.zip
 find app/src/main/java -name '*.java' > build/sources.txt
 javac -encoding UTF-8 -source 8 -target 8 -bootclasspath "$bt/core-lambda-stubs.jar:$platform" -d build/classes @build/sources.txt
 jar cf build/classes.jar -C build/classes .
