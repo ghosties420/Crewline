@@ -1,12 +1,12 @@
 # Crewline
 
-Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.7.0**, pilot stage. No in-app purchases. iOS is not implemented.
+Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.7.1**, pilot stage. No in-app purchases. iOS is not implemented.
 
 - `android/`: Android client, bundled UI and build scripts.
 - `server/`: API, data storage, community features and voice relay.
 - `deploy/`: Linux / Docker setup, updates, backups and recovery.
 - `tests/`: API, migration, browser and native transport checks.
-- [Update guide](UPDATE-1.7.md): changes, installation and remaining launch work.
+- [Update guide](UPDATE-1.7.1.md): changes, installation and remaining launch work.
 
 ## Development checks
 
@@ -240,3 +240,6 @@ Map and Explore have a Full screen / Exit full screen button. Map options opens 
 
 ### Convoy map and directions (1.7)
 Joining or viewing a convoy opens its full-screen map. Convoy options holds readiness, radio, pings and organiser tools; push-to-talk stays available on the map. Directions to the meeting, destination or stops stay inside Crewline, with a route line, foreground location updates, visual maneuver guidance and manual recalculation. Update both server and APK. See UPDATE-1.7.md for routing-provider disclosure, setup and limitations.
+
+### Continuous navigation GPS (1.7.1)
+Navigation follows automatically using a dedicated foreground GPS listener and smooth movement between fixes. Actual cadence depends on the phone. Drag to browse, then Follow me to resume. See UPDATE-1.7.1.md. Server stays at 1.7.0.
