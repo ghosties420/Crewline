@@ -56,7 +56,7 @@ async function convoyDetails(id){
  const d=modal(c.title);d.classList.add('convoy-map-screen');const title=d.querySelector('h2'),header=node('div',undefined,'convoy-map-header');header.append(title,action('Close',()=>d.close(),'secondary'));d.prepend(header);
  const area=node('section',undefined,'convoy-map-area'),canvas=node('div',undefined,'convoy-map-canvas');canvas.id='convoyMap';area.append(canvas);d.append(area);
  const toolbar=node('div',undefined,'convoy-map-toolbar'),menu=node('details',undefined,'convoy-map-menu'),summary=node('summary','Convoy options'),tools=node('div',undefined,'convoy-map-tools');summary.setAttribute('aria-controls','convoyOptions');tools.id='convoyOptions';menu.append(summary,tools);toolbar.append(menu);area.append(toolbar);
- const m=L.map(canvas,{zoomAnimation:false,fadeAnimation:false,minZoom:3,maxZoom:19}).setView(mapPosition,mapZoom);convoyTiles(m);const points=[];
+ const m=L.map(canvas,{zoomAnimation:false,fadeAnimation:false,minZoom:3,maxZoom:19}).setView(mapPosition,mapZoom);convoyTiles(m);m.zoomControl.setPosition('topright');const points=[];
  function pin(lat,lon,title){points.push([lat,lon]);L.marker([lat,lon],{icon:icon('convoy-pin'),title}).bindPopup(popup(title)).addTo(m);}
  if(c.start_lat!==null&&c.start_lat!==undefined)pin(c.start_lat,c.start_lon,'Meet: '+(c.meeting||c.title));for(const [i,s]of (c.stops||[]).entries())pin(s.lat,s.lon,'Stop '+(i+1)+': '+s.name);pin(c.lat,c.lon,'Destination: '+(c.destination||c.title));
  function fit(){m.fitBounds(points,{padding:[50,50],maxZoom:15,animate:false});}fit();
@@ -65,7 +65,7 @@ async function convoyDetails(id){
  if(c.joined&&c.stops?.length)tools.append(action('Drive via all stops',()=>navigation.start('all','All stops → '+(c.destination||c.title)),'secondary'));
  tools.append(action('Show meeting point & destination',()=>{menu.open=false;fit();},'secondary'));
  tools.append(node('p','Directions stay in Crewline. Open convoy options at any time for radio, pings and member tools.','muted'));
- if(c.joined&&c.phase!=='completed')attachRoadReports(c,d,m,tools,()=>{menu.open=false;});else tools.append(node('p',c.phase==='completed'?'This convoy has finished.':'Join this convoy from the options menu to use radio, readiness and road reports.'));
+ if(c.joined&&c.phase!=='completed')attachRoadReports(c,d,m,tools,()=>{menu.open=false;},area);else tools.append(node('p',c.phase==='completed'?'This convoy has finished.':'Join this convoy from the options menu to use radio, readiness and road reports.'));
  if(c.mine&&c.phase!=='completed')tools.append(action('Edit plan & departure',()=>editConvoy(c,d),'secondary'));
  const centre=action('Centre on me',async()=>{const fix=await native('locate');if(!d.isConnected)return;m.setView([fix.lat,fix.lon],16);L.marker([fix.lat,fix.lon],{icon:icon('me-pin')}).bindPopup(popup('You','Fresh location; sharing unchanged')).addTo(m);},'secondary convoy-map-centre');area.append(centre);
  canvas.addEventListener('pointerdown',()=>{menu.open=false;});
