@@ -29,3 +29,9 @@ jobs:
           export ANDROID_SDK_ROOT="$ANDROID_HOME"
           bash android/build-apk.sh
           bash admin-android/build-apk.sh
+      - name: Save private Admin test build
+        uses: actions/upload-artifact@v4
+        with:
+          name: crewline-admin-test-apk
+          path: admin-android/build/crewline-admin.apk
+          retention-days: 7
