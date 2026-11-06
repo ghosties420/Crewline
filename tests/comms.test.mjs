@@ -18,5 +18,22 @@ test('posts, DM isolation, photo ownership/privacy and authenticated voice relay
  const av=await voice(a,cid),bv=await voice(b,cid);await assert.rejects(voice(e,cid),err=>err.status===404);const audio=Buffer.alloc(160,23);av.send(audio);let received=await bv.read();assert.equal(received.subarray(0,48).toString(),a.id);assert.deepEqual(received.subarray(48),audio);
  bv.send(Buffer.alloc(160,42));assert.equal((await av.read())[48],42);await call(b,'/calls/'+cid+'/leave','POST',{});assert.equal((await call(a,'/calls')).data.calls.length,0);
  cid=(await call(a,'/calls','POST',{peer:'crew'})).data.id;await call(b,'/calls/'+cid+'/join','POST',{});await call(e,'/calls/'+cid+'/join','POST',{});const va=await voice(a,cid),vb=await voice(b,cid),ve=await voice(e,cid);va.send(audio);assert.deepEqual((await vb.read()).subarray(48),audio);assert.deepEqual((await ve.read()).subarray(48),audio);assert.equal((await call(b,'/calls/'+cid+'/end','POST',{})).status,403);await call(a,'/calls/'+cid+'/end','POST',{});assert.equal((await call(e,'/calls')).data.calls.length,0);
+ // Twenty participants can join the same convoy radio, with one speaker at a time.
+ const group=[a,b,e];for(let i=4;i<=20;i++)group.push(await user('Member'+i));
+ const convoy=(await call(a,'/convoys','POST',{title:'Radio scale test',destination:'Harbour',lat:-41.1,lon:174.8})).data.id;
+ cid=(await call(a,'/calls','POST',{convoy})).data.id;
+ for(const participant of group.slice(1)){
+  assert.equal((await call(participant,'/convoys/'+convoy+'/join','POST',{})).status,200);
+  assert.equal((await call(participant,'/calls','POST',{convoy})).data.id,cid);
+  assert.equal((await call(participant,'/calls/'+cid+'/join','POST',{})).status,200);
+ }
+ const allVoice=await Promise.all(group.map(participant=>voice(participant,cid)));
+ const receivedByAll=allVoice.slice(1).map(v=>v.read());allVoice[0].send(audio);
+ for(const packet of await Promise.all(receivedByAll))assert.deepEqual(packet.subarray(48),audio);
+ allVoice[1].send(Buffer.alloc(160,42));
+ await assert.rejects(allVoice[2].read(),/No voice packet/); // Alice still holds the floor.
+ allVoice[1].send(Buffer.alloc(160,42));
+ assert.equal((await allVoice[3].read()).subarray(48)[0],42); // Lease expires.
+ await call(a,'/calls/'+cid+'/end','POST',{});
  await call(a,'/board/'+post,'DELETE');assert.equal((await call(b,'/board')).data.posts.length,0);
 }finally{for(const s of connections)s.destroy();await new Promise(r=>setTimeout(r,30));server.close();}});

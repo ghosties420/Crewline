@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Crewline Admin</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top"><div class="logo">C<span>·</span></div><div><strong>Crewline Admin</strong><small>Private operations console</small></div><span id="health" class="health unknown">Not connected</span></header>
+<main>
+ <section id="signin" class="panel auth hidden">
+  <div class="hero-icon">↗</div><h1>Secure sign in</h1><p>Use your existing Crewline administrator or moderator account. The server must be accessible over HTTPS, including through Tailscale.</p>
+  <form id="login-form"><label>Server address<input id="server" type="url" placeholder="https://your-crewline-server.ts.net" autocomplete="url" required></label>
+   <label>Crewline username<input id="name" autocomplete="username" required></label>
+   <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+   <button type="submit" class="primary">Sign in</button>
+  </form>
+ </section>
+ <div id="app" class="hidden">
+  <section id="overview" class="screen"><div class="heading"><div><h1>Overview</h1><p id="updated">Waiting for server data</p></div><button id="refresh" class="quiet">↻ Refresh</button></div>
+   <div id="metric-grid" class="metrics"></div><h2>Community</h2><div id="community-grid" class="metrics"></div>
+   <p class="note">These statistics are live application metrics, not a guarantee of VPS capacity. Host CPU, disk and network readings require your server monitoring system.</p>
+  </section>
+  <section id="users" class="screen hidden"><div class="heading"><div><h1>Users</h1><p>Accounts, roles and suspensions</p></div></div><div id="user-list" class="stack"></div></section>
+  <section id="reports" class="screen hidden"><div class="heading"><div><h1>Reports</h1><p>Moderation queue and evidence review</p></div></div><div id="report-list" class="stack"></div></section>
+  <section id="operations" class="screen hidden"><div class="heading"><div><h1>Operations</h1><p>Configuration and audit trail</p></div></div>
+   <section class="panel"><h2>Community settings</h2><label>Privacy / support contact<input id="contact" placeholder="contact@example.nz"></label><button id="save-contact">Save contact</button>
+    <div class="setting"><div><strong>Public registration</strong><small>Keep closed during the private beta</small></div><button id="signup" class="danger-outline">Loading…</button></div></section>
+   <section class="panel"><h2>Recent admin actions</h2><div id="audit" class="stack compact"></div></section>
+  </section>
+  <section id="terminal" class="screen hidden"><div class="heading"><div><h1>Server terminal</h1><p id="ssh-status">Disconnected</p></div></div>
+   <section class="panel"><h2>SSH connection</h2><p>This SSH session runs inside Crewline Admin. For a private Tailscale server, install and connect Tailscale <strong>inside this GrapheneOS profile</strong>. Each profile has its own VPN and app credentials.</p>
+    <label>SSH hostname<input id="ssh-host" placeholder="server.your-tailnet.ts.net" autocomplete="off"></label><label>Linux user<input id="ssh-user" value="admin" autocomplete="off"></label>
+    <label>Port<input id="ssh-port" type="number" value="22" min="1" max="65535"></label>
+    <label>One-time SSH password (optional)<input id="ssh-password" type="password" autocomplete="off" placeholder="Leave blank when your public key is authorised"></label>
+    <button id="ssh-open" class="primary">Connect inside Crewline Admin</button>
+    <p class="note">The app creates a separate SSH key for each GrapheneOS profile. Your private key stays encrypted in that profile using Android Keystore. Verify the server's fingerprint on first connection.</p>
+    <details><summary>Install this profile's SSH public key on the server</summary><p>Copy the public key below into the Linux account's <code>~/.ssh/authorized_keys</code> file using your laptop or an existing trusted connection.</p>
+      <pre id="ssh-public" class="public-key">Generating public key…</pre><button id="ssh-copy-key">Copy public key</button>
+    </details></section>
+   <section class="panel terminal-panel"><div class="row"><h2>Live SSH shell</h2><button id="ssh-close" class="quiet">Disconnect</button></div>
+    <pre id="ssh-output" class="terminal-output" aria-live="off">Connect to begin a shell session.\n</pre>
+    <form id="ssh-form"><label>Command or terminal input<input id="ssh-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Enter a command"></label><button type="submit">Send ↵</button></form>
+    <div class="actions" id="terminal-keys"><button data-key="interrupt">Ctrl+C</button><button data-key="tab">Tab</button><button data-key="up">↑</button><button data-key="down">↓</button><button data-key="backspace">Backspace</button><button id="ssh-clear">Clear display</button></div>
+    <p class="note">This is an interactive shell with basic text output and special keys. Full-screen terminal applications such as Vim are not yet rendered accurately.</p>
+   </section>
+   <section class="panel"><h2>Useful server commands</h2><p>Run these only after connecting to the right server.</p>
+    <div class="command"><code>sudo systemctl status crewline</code></div><div class="command"><code>sudo journalctl -u crewline -n 100</code></div>
+    <div class="command"><code>sudo bash deploy/health-check.sh</code></div><p class="note">Restarts, deploys and database restores remain manual terminal operations to prevent accidental downtime.</p>
+   </section>
+  </section>
+  <div id="message" class="toast hidden" role="status"></div>
+  <nav class="tabs" aria-label="Admin navigation">
+   <button data-tab="overview" class="active"><span>▦</span>Overview</button><button data-tab="users"><span>♙</span>Users</button><button data-tab="reports"><span>⚑</span>Reports</button><button data-tab="operations"><span>⚙</span>Ops</button><button data-tab="terminal"><span>⌘</span>SSH</button>
+  </nav>
+  <button id="signout" class="signout">Sign out</button>
+ </div>
+</main><script src="app.js"></script></body></html>

@@ -3,10 +3,17 @@
 Android car-community app with a self-hosted Node.js / SQLite server. Current source: **1.5.0**, pilot stage. No in-app purchases. iOS is not implemented.
 
 - `android/`: Android client, bundled UI and build scripts.
+- `admin-android/`: Separate private Crewline Admin Android client source (early version; see its README for limitations).
 - `server/`: API, data storage, community features and voice relay.
 - `deploy/`: Linux / Docker setup, updates, backups and recovery.
 - `tests/`: API, migration, browser and native transport checks.
 - [Update guide](UPDATE-1.5.md): changes, installation and remaining launch work.
+
+### Unreleased development changes
+
+The current development branch removes the **eight-person voice-room cap** and no longer forwards muted/silent audio from newer Android clients. Convoy radio uses a single-speaker transmit lease; local automated tests exercise 20 connected voice clients. These changes **are not installed on existing devices or servers** until both updated components are deployed. They do not imply unlimited practical capacity, and a 20-phone/mobile-network test is still required.
+
+There is also an early, separately installed [Crewline Admin Android client](admin-android/README.md). Its monitoring and moderation interfaces connect to Crewline's existing admin API and new private metrics endpoint. The in-progress SSH shell is embedded in the app and creates profile-local credentials for GrapheneOS, but still needs device testing and an updated Android build.
 
 ## Development checks
 
@@ -58,7 +65,7 @@ Event details include Create convoy for this event. The event title, meeting-pla
 
 ## Convoy radio
 
-Join a convoy, then tap **Convoy radio**. It uses the same self-hosted internet voice relay, with a maximum of eight connected participants. The microphone is muted initially. Hold Talk to transmit; release to listen. Release, pointer cancellation, loss of focus and a native 800 ms held-signal timeout stop transmission. Screen lock/app background keeps listening where Android permits, but talking requires returning to the foreground control. Speaker/earpiece and Leave radio controls are provided.
+In the historical 1.3 pilot, convoy radio used the same self-hosted internet voice relay with a maximum of eight connected participants. The microphone was muted initially. Hold Talk to transmit; release to listen. Release, pointer cancellation, loss of focus and a native 800 ms held-signal timeout stop transmission. Screen lock/app background kept listening where Android permitted, but talking required returning to the foreground control. Speaker/earpiece and Leave radio controls were provided.
 
 Radio membership requires current convoy membership and access. Leaving the convoy, losing private-crew access, or finishing/deleting the convoy revokes access. Audio permission is requested only on opening the channel, not on joining the convoy. Microphone capture remains active while connected, even when muted, so Android's microphone indicator may remain visible; muted audio is replaced by silence before transmission.
 
@@ -128,7 +135,7 @@ People create individual accounts. They then go to **Community → Find crews** 
 - **Crew interaction:** organisers invite other crews to events; members of accepted crews can coordinate in the event discussion. That discussion shares neither the host's private chat nor its live locations. There is no separate persistent crew-to-crew chat channel in this version.
 - **Find crews:** searchable names/regions, applications with an introduction, approval/decline, application withdrawal, membership list, organiser promotion, removal, ownership transfer and leaving/deleting a crew. A person can belong to up to 20 crews.
 - **Active crew:** choose one in Social/My crews. Its board, chat, convoys, garage and map members appear. Switching crews stops location recording/sharing through the UI, and changing the server-side selection invalidates previous sharing tokens. Individual mode has no crew map sharing.
-- **Voice:** direct and crew rooms, up to 8 joined participants per room, G.711 telephone-quality audio. No recording; not app-level end-to-end encryption. Tailscale/HTTPS protects network transport. Actual microphone/echo/Bluetooth/screen-lock behaviour requires device testing.
+- **Voice (historical 1.2 pilot):** direct and crew rooms, up to 8 joined participants per room, G.711 telephone-quality audio. No recording; not app-level end-to-end encryption. Tailscale/HTTPS protects network transport. Actual microphone/echo/Bluetooth/screen-lock behaviour requires device testing.
 - **Profiles and cars:** one avatar and one photo per vehicle. Photos are resized/re-encoded on Android, removing metadata. Up to 20 vehicles per person; 450 KB per photo; a pilot server photo limit of approximately 100 MB blocks additional uploads when full. This is not an album feature.
 - **Safety:** direct messages/calls default to people who share a crew. People can choose anyone or nobody. Blocking stops direct contact and hides the blocked person's live marker; shared crew discussions are not automatically hidden. Reports, account suspensions, content removal, moderator roles and an audit trail are available to site staff. Reported private text can be reviewed by moderators; these reviews are logged. Server operators have database access.
 - **Recovery:** Settings → Generate recovery code. Save it outside the phone. The login recovery form resets the password using that one-use code, revokes sessions and stops sharing. Generate a fresh code after recovery. There is no email/SMS verification or recovery service. The local admin password-reset command remains available.

@@ -1,0 +1,37 @@
+name: Verify Crewline admin and radio changes
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Node API and radio tests
+        run: node --test tests/*.test.mjs
+      - name: Admin interface syntax
+        run: node --check admin-android/app/src/main/assets/app.js
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Android platform/build tools
+        run: |
+          sdkmanager_path="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
+          test -n "$sdkmanager_path"
+          yes | "$sdkmanager_path" --sdk_root="$ANDROID_HOME" "platforms;android-35" "build-tools;35.0.0"
+      - name: Compile both Android clients with local test signing
+        run: |
+          export ANDROID_SDK_ROOT="$ANDROID_HOME"
+          bash android/build-apk.sh
+          bash admin-android/build-apk.sh
+      - name: Save private Admin test build
+        uses: actions/upload-artifact@v4
+        with:
+          name: crewline-admin-test-apk
+          path: admin-android/build/crewline-admin.apk
+          retention-days: 7
