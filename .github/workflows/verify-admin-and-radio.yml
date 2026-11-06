@@ -20,10 +20,12 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Install Android platform/build tools
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
-      - name: Compile both Android clients with local test signing
-        env:
-          ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
         run: |
+          sdkmanager_path="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
+          test -n "$sdkmanager_path"
+          yes | "$sdkmanager_path" --sdk_root="$ANDROID_HOME" "platforms;android-35" "build-tools;35.0.0"
+      - name: Compile both Android clients with local test signing
+        run: |
+          export ANDROID_SDK_ROOT="$ANDROID_HOME"
           bash android/build-apk.sh
           bash admin-android/build-apk.sh
