@@ -23,6 +23,14 @@ export function createSafety(db,{bad,text,transaction,limit,comms}){
  if(path==='/reports'&&method==='POST'){limit('report:'+user,10);if(!['user','post','message','event','crew','event-message','vehicle','photo','convoy'].includes(b.kind))bad(400,'Unknown report type');db.prepare('INSERT INTO reports(reporter,kind,target,reason,created) VALUES(?,?,?,?,?)').run(user,b.kind,text(b.target,100),text(b.reason,2000),Date.now());return {ok:true};}
  if(!path.startsWith('/admin/'))return;
  const role=db.prepare('SELECT site_role FROM users WHERE id=?').get(user)?.site_role;if(!['admin','moderator'].includes(role))bad(403,'Moderator access required');
+ if(path==='/admin/metrics'&&method==='GET'){
+  if(role!=='admin')bad(403,'Administrator only');
+  const memory=process.memoryUsage();
+  return {time:Date.now(),uptimeSeconds:Math.floor(process.uptime()),memoryRssBytes:memory.rss,
+   heapUsedBytes:memory.heapUsed,activeLocations:db.prepare('SELECT count(*) AS n FROM locations WHERE updated>?').get(Date.now()-60000).n,
+   activeConvoys:db.prepare("SELECT count(*) AS n FROM convoys WHERE phase IN ('meeting','driving')").get().n,
+   ...comms.metrics()};
+ }
  if(path==='/admin/dashboard'&&method==='GET')return {role,signupOpen:openSignup(),contact:contact(),counts:Object.fromEntries(['users','crews','events','reports','photos'].map(t=>[t,db.prepare('SELECT count(*) AS n FROM '+t).get().n])),reports:db.prepare('SELECT r.*,u.name AS reporterName FROM reports r LEFT JOIN users u ON u.id=r.reporter ORDER BY r.id DESC LIMIT 200').all(),users:db.prepare('SELECT id,name,site_role,banned FROM users ORDER BY name LIMIT 500').all(),audit:db.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 100').all()};
  if(path==='/admin/contact'&&method==='PUT'){if(role!=='admin')bad(403,'Administrator only');const value=text(b.contact,300);db.prepare("INSERT INTO settings VALUES('contact',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(value);log(user,'contact','updated');return {ok:true};}
  if(path==='/admin/signup'&&method==='PUT'){if(role!=='admin')bad(403,'Administrator only');if(b.open===true&&!contact())bad(400,'Set your privacy/support contact first');db.prepare("INSERT INTO settings VALUES('signup',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(b.open===true?'open':'invite');log(user,'signup',b.open===true?'open':'invite');return {ok:true};}

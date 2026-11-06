@@ -25,7 +25,7 @@ The current download is a test-signed pilot. Adding more screens is not the main
 - Convoy-specific live location sharing and privacy controls. Existing location sharing remains scoped to the selected crew; joining a public convoy does not expose your location.
 - Organiser participant approval/removal and radio speaker management.
 - Dedicated convoy text chat, notification reminders, route/stop navigation handoff and place search.
-- Single-speaker radio floor control and configurable room size if testing justifies it. Current push-to-talk is a transmit control, not an exclusive radio channel: simultaneous speakers can overlap.
+- Validate the unreleased single-speaker convoy radio floor and removed eight-person voice cap under real-world load. Automated 20-client forwarding tests do not establish reliable 20-phone capacity on mobile networks.
 
 ## If distributing through Google Play
 

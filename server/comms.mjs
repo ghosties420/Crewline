@@ -13,11 +13,12 @@ export function createComms(db,{bad,text,transaction,limit,community,safety,conv
  if(!db.prepare('PRAGMA table_info(calls)').all().some(c=>c.name==='convoy'))db.exec('ALTER TABLE calls ADD COLUMN convoy TEXT');
  const convoyAllowed=(cid,user)=>{const c=convoys().get(cid);return !!c&&c.phase!=='completed'&&convoys().visible(c,user)&&convoys().joined(cid,user);};
  const sockets=new Map(); // Key = call/user. Audio exists only in bounded socket buffers.
+ const radioFloors=new Map(); // Per-convoy push-to-talk speaker lease, not a participant limit.
  const room=(user,peer)=>{if(!peer||peer==='crew')return 'crew:'+community().requireCrew(user);if(peer===user||!db.prepare('SELECT id FROM users WHERE id=?').get(peer))bad(400,'Choose another member');if(!safety().canContact(user,peer))bad(403,'Messaging is unavailable for this person');return [user,peer].sort().join(':');};
  const members=cid=>db.prepare('SELECT m.user,m.status,u.name FROM call_members m JOIN users u ON u.id=m.user WHERE m.call=?').all(cid);
  function calls(user){return db.prepare(`SELECT c.*,u.name AS name,m.status AS myStatus FROM calls c JOIN users u ON u.id=c.owner JOIN call_members m ON m.call=c.id AND m.user=? WHERE c.ended IS NULL AND (c.crew IS NULL OR EXISTS(SELECT 1 FROM crew_members cm WHERE cm.crew=c.crew AND cm.user=m.user)) ORDER BY c.created DESC`).all(user).filter(c=>!c.convoy||convoyAllowed(c.convoy,user)).map(c=>({...c,members:members(c.id)}));}
  function closeVoice(cid,user){const s=sockets.get(cid+'/'+user);if(s)s.destroy();}
- function end(cid){db.prepare('UPDATE calls SET ended=? WHERE id=? AND ended IS NULL').run(Date.now(),cid);for(const [k,s]of sockets)if(k.startsWith(cid+'/'))s.destroy();}
+ function end(cid){radioFloors.delete(cid);db.prepare('UPDATE calls SET ended=? WHERE id=? AND ended IS NULL').run(Date.now(),cid);for(const [k,s]of sockets)if(k.startsWith(cid+'/'))s.destroy();}
  function finishEmpty(cid){if(!db.prepare("SELECT 1 FROM call_members WHERE call=? AND status='joined'").get(cid))end(cid);}
  function allowedCall(cid,user){const c=db.prepare('SELECT c.*,m.status FROM calls c JOIN call_members m ON m.call=c.id AND m.user=? WHERE c.id=? AND c.ended IS NULL').get(user,cid);if(!c||(c.convoy&&!convoyAllowed(c.convoy,user))||(c.crew&&!community().member(c.crew,user)))bad(404,'Call unavailable');return c;}
  function housekeeping(){const now=Date.now();for(const c of db.prepare('SELECT id,kind,created FROM calls WHERE ended IS NULL').all()){
@@ -54,7 +55,6 @@ export function createComms(db,{bad,text,transaction,limit,community,safety,conv
    if(act==='end'){if(c.owner!==user)bad(403,'Only the organiser can end the call');end(cid);return {ok:true};}
    if(act==='join'){
     if(db.prepare("SELECT 1 FROM call_members m JOIN calls c ON c.id=m.call WHERE m.user=? AND m.call<>? AND m.status='joined' AND c.ended IS NULL").get(user,cid))bad(409,'Already in another call');
-    if(c.status!=='joined'&&db.prepare("SELECT count(*) AS n FROM call_members WHERE call=? AND status='joined'").get(cid).n>=8)bad(409,'Call is full (8 people maximum)');
     db.prepare("UPDATE call_members SET status='joined',seen=? WHERE call=? AND user=?").run(Date.now(),cid,user);
    }else {db.prepare('UPDATE call_members SET status=? WHERE call=? AND user=?').run(act==='decline'?'declined':'left',cid,user);closeVoice(cid,user);if(c.kind==='direct')end(cid);else finishEmpty(cid);}
    return {ok:true};
@@ -78,11 +78,20 @@ export function createComms(db,{bad,text,transaction,limit,community,safety,conv
     if(op!==2||n!==160){socket.destroy();return;}
     if(now-lastLease>5000){lastLease=now;if(!db.prepare('SELECT 1 FROM sessions WHERE token=? AND expires>?').get(hash,now)){socket.destroy();return;}db.prepare('UPDATE call_members SET seen=? WHERE call=? AND user=?').run(now,cid,user);}
     if((c.convoy&&!convoyAllowed(c.convoy,user))||(c.crew&&!community().member(c.crew,user))){socket.destroy();return;}
+    if(c.kind==='convoy'){
+     const floor=radioFloors.get(cid);
+     if(floor&&floor.user!==user&&now-floor.last<350)continue;
+     radioFloors.set(cid,{user,last:now});
+    }
     const outgoing=frame(Buffer.concat([Buffer.from(user,'ascii'),payload]));for(const [k,other]of sockets)if(k.startsWith(cid+'/')&&other!==socket){if((c.convoy&&!convoyAllowed(c.convoy,k.split('/')[1]))||(c.crew&&!community().member(c.crew,k.split('/')[1]))){other.destroy();continue;}if(other.writableLength>8192)other.destroy();else other.write(outgoing);}
    }}socket.on('data',data);if(head.length)data(head);
   }catch(e){socket.end('HTTP/1.1 '+(e.status||400)+' Rejected\r\nConnection: close\r\nContent-Length: 0\r\n\r\n');}
  });}
  function disconnect(user){for(const [key,s]of sockets)if(key.endsWith('/'+user))s.destroy();}
- return {handle,attach,disconnect};
+ function metrics(){
+  return {voiceConnections:sockets.size,activeCalls:db.prepare('SELECT count(*) AS n FROM calls WHERE ended IS NULL').get().n,
+   joinedCallParticipants:db.prepare("SELECT count(*) AS n FROM call_members m JOIN calls c ON c.id=m.call WHERE m.status='joined' AND c.ended IS NULL").get().n};
+ }
+ return {handle,attach,disconnect,metrics};
 }
 function frame(payload,opcode=2){let h;if(payload.length<126)h=Buffer.from([128|opcode,payload.length]);else{h=Buffer.alloc(4);h[0]=128|opcode;h[1]=126;h.writeUInt16BE(payload.length,2);}return Buffer.concat([h,payload]);}
