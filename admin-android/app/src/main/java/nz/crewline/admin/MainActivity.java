@@ -18,16 +18,17 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.KeyGenerator;
 import android.util.Base64;
 
-public final class MainActivity extends Activity {
+public final class MainActivity extends Activity implements SshTerminal.Events {
  private static final String ORIGIN="https://appassets.androidplatform.net/";
  private final ExecutorService queue=Executors.newSingleThreadExecutor();
  private WebView web;
  private android.content.SharedPreferences prefs;
  private String token="";
+ private SshTerminal ssh;
 
  @Override public void onCreate(Bundle saved){super.onCreate(saved);
   getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-  prefs=getSharedPreferences("admin",MODE_PRIVATE);token=readToken();
+  prefs=getSharedPreferences("admin",MODE_PRIVATE);token=readToken();ssh=new SshTerminal(this,this);
   web=new WebView(this);setContentView(web);
   if(Build.VERSION.SDK_INT>=30)web.setOnApplyWindowInsetsListener((v,insets)->{
    android.graphics.Insets i=insets.getInsets(WindowInsets.Type.systemBars()|WindowInsets.Type.ime());
@@ -92,6 +93,9 @@ public final class MainActivity extends Activity {
  private void result(String id,Object data,String error){runOnUiThread(()->{
   if(!isDestroyed())web.evaluateJavascript("window.nativeResult("+JSONObject.quote(id)+","+(data==null?"null":data.toString())+","+(error==null?"null":JSONObject.quote(error))+")",null);
  });}
+ @Override public void onTerminalEvent(String kind,String message){runOnUiThread(()->{
+  if(!isDestroyed())web.evaluateJavascript("window.terminalEvent&&window.terminalEvent("+JSONObject.quote(kind)+","+JSONObject.quote(message==null?"":message)+")",null);
+ });}
  public final class Bridge {
   @JavascriptInterface public void request(String id,String action,String json){
    queue.execute(()->{try{JSONObject b=new JSONObject(json);Object out=new JSONObject();String server=prefs.getString("server","");
@@ -113,11 +117,16 @@ public final class MainActivity extends Activity {
       if(!token.isEmpty())try{api(server,token,"/logout","POST",null);}catch(Exception ignored){}
       saveToken("");out=new JSONObject().put("ok",true);break;
      }
-     case "terminal":{
-      String host=b.getString("host").trim(),username=b.getString("user").trim();int port=b.optInt("port",22);
-      if(!host.matches("[A-Za-z0-9.-]{1,253}")||!username.matches("[A-Za-z0-9_-]{1,32}")||port<1||port>65535)throw new IOException("Invalid SSH address");
-      Uri uri=Uri.parse("ssh://"+username+"@"+host+":"+port);
-      runOnUiThread(()->{try{startActivity(new Intent(Intent.ACTION_VIEW,uri));}catch(Exception e){new AlertDialog.Builder(MainActivity.this).setTitle("SSH app required").setMessage("Install a trusted Android SSH client, or use Termux with the SSH command shown in Crewline Admin.").setPositiveButton("OK",null).show();}});
+     case "terminalSetup":out=new JSONObject().put("publicKey",ssh.publicKey()).put("connected",ssh.connected());break;
+     case "terminalConnect":{
+      ssh.publicKey();ssh.connect(b.getString("host").trim(),b.getString("user").trim(),b.optInt("port",22),b.optString("password",""));
+      out=new JSONObject().put("connected",true);break;
+     }
+     case "terminalSend":ssh.send(b.getString("input"));break;
+     case "terminalDisconnect":ssh.disconnect();out=new JSONObject().put("connected",false);break;
+     case "terminalCopyKey":{
+      String publicKey=ssh.publicKey();
+      runOnUiThread(()->((android.content.ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("Crewline Admin SSH public key",publicKey)));
       break;
      }
      default:throw new IOException("Unknown action");
@@ -125,5 +134,5 @@ public final class MainActivity extends Activity {
    }catch(Exception e){result(id,null,e.getMessage()==null?"Request failed":e.getMessage());}});
   }
  }
- @Override protected void onDestroy(){web.removeJavascriptInterface("Native");web.destroy();queue.shutdownNow();super.onDestroy();}
+ @Override protected void onDestroy(){ssh.disconnect();web.removeJavascriptInterface("Native");web.destroy();queue.shutdownNow();super.onDestroy();}
 }

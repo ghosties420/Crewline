@@ -7,7 +7,7 @@ function el(tag,text,cls){const node=document.createElement(tag);if(text!==undef
 function child(parent,...nodes){nodes.forEach(n=>parent.appendChild(n));return parent;}
 function notify(message){$('message').textContent=message;$('message').classList.remove('hidden');setTimeout(()=>$('message').classList.add('hidden'),4500);}
 function loginView(server=''){$('signin').classList.remove('hidden');$('app').classList.add('hidden');$('health').className='health unknown';$('health').textContent='Not connected';$('server').value=server;signedIn=false;}
-function appView(){$('signin').classList.add('hidden');$('app').classList.remove('hidden');signedIn=true;switchTo('overview');refresh();}
+function appView(){$('signin').classList.add('hidden');$('app').classList.remove('hidden');signedIn=true;switchTo('overview');refresh();loadTerminalKey();}
 function switchTo(name){screen=name;document.querySelectorAll('.screen').forEach(n=>n.classList.toggle('hidden',n.id!==name));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));}
 const api=(path,method='GET',body)=>native('api',{path,method,body});
 async function refresh(){if(!signedIn)return;try{
@@ -65,7 +65,32 @@ $('refresh').addEventListener('click',refresh);
 $('save-contact').addEventListener('click',async()=>{try{await api('/admin/contact','PUT',{contact:$('contact').value});await refresh();notify('Contact updated');}catch(e){notify(e.message);}});
 $('signup').addEventListener('click',async()=>{if(!dashboard)return;const open=!dashboard.signupOpen;if(!confirm((open?'Open public':'Close public')+' registration?'))return;
  try{await api('/admin/signup','PUT',{open});await refresh();}catch(e){notify(e.message);}});
-$('ssh-open').addEventListener('click',async()=>{try{await native('terminal',{host:$('ssh-host').value,user:$('ssh-user').value,port:Number($('ssh-port').value)});}catch(e){notify(e.message);}});
+async function loadTerminalKey(){try{const s=await native('terminalSetup');$('ssh-public').textContent=s.publicKey;$('ssh-copy-key').disabled=false;
+ if(s.connected)$('ssh-status').textContent='Connected';}catch(e){$('ssh-public').textContent=e.message;}}
+window.terminalEvent=(kind,message)=>{
+ if(kind==='output'){
+  const output=$('ssh-output');
+  // Drop basic VT/ANSI control sequences for a readable text shell. A full
+  // screen buffer is still needed for Vim/top and other cursor-heavy programs.
+  const plain=message.replace(/\x1b\][\s\S]*?(?:\x07|\x1b\\)/g,'').replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,'').replace(/\r/g,'');
+  output.textContent=(output.textContent+plain).slice(-100000);output.scrollTop=output.scrollHeight;
+ }else if(kind==='connected'){$('ssh-status').textContent='Connected to '+message;$('ssh-output').textContent='';}
+ else if(kind==='closed'){$('ssh-status').textContent='Disconnected';}
+ else if(kind==='notice')notify(message);
+};
+$('ssh-open').addEventListener('click',async()=>{
+ const password=$('ssh-password').value;$('ssh-password').value='';$('ssh-status').textContent='Connecting…';
+ try{await native('terminalConnect',{host:$('ssh-host').value,user:$('ssh-user').value,port:Number($('ssh-port').value),password});}
+ catch(e){$('ssh-status').textContent='Connection failed';notify(e.message);}
+});
+$('ssh-close').addEventListener('click',async()=>{try{await native('terminalDisconnect');$('ssh-status').textContent='Disconnected';}catch(e){notify(e.message);}});
+$('ssh-copy-key').addEventListener('click',async()=>{try{await native('terminalCopyKey');notify('Public key copied');}catch(e){notify(e.message);}});
+$('ssh-form').addEventListener('submit',async e=>{e.preventDefault();const input=$('ssh-input').value;$('ssh-input').value='';
+ try{await native('terminalSend',{input:input+'\n'});}catch(error){notify(error.message);}});
+const controlKeys={interrupt:'\u0003',tab:'\t',up:'\u001b[A',down:'\u001b[B',backspace:'\u007f'};
+document.querySelectorAll('[data-key]').forEach(b=>b.addEventListener('click',async()=>{
+ try{await native('terminalSend',{input:controlKeys[b.dataset.key]});}catch(e){notify(e.message);}}));
+$('ssh-clear').addEventListener('click',()=>$('ssh-output').textContent='');
 $('signout').addEventListener('click',async()=>{await native('logout').catch(()=>{});loginView($('server').value);});
 native('boot').then(b=>{if(b.signedIn){signedIn=true;$('server').value=b.server;appView();}else loginView(b.server);}).catch(e=>loginView());
 setInterval(()=>{if(signedIn)refresh();},15000);

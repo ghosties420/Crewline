@@ -13,7 +13,7 @@ Android car-community app with a self-hosted Node.js / SQLite server. Current so
 
 The current development branch removes the **eight-person voice-room cap** and no longer forwards muted/silent audio from newer Android clients. Convoy radio uses a single-speaker transmit lease; local automated tests exercise 20 connected voice clients. These changes **are not installed on existing devices or servers** until both updated components are deployed. They do not imply unlimited practical capacity, and a 20-phone/mobile-network test is still required.
 
-There is also an early, separately installed [Crewline Admin Android client](admin-android/README.md). Its monitoring and moderation interfaces connect to Crewline's existing admin API and new private metrics endpoint. It is source-only until an Android SDK build and device verification are complete; its SSH feature currently opens a trusted external client.
+There is also an early, separately installed [Crewline Admin Android client](admin-android/README.md). Its monitoring and moderation interfaces connect to Crewline's existing admin API and new private metrics endpoint. The in-progress SSH shell is embedded in the app and creates profile-local credentials for GrapheneOS, but still needs device testing and an updated Android build.
 
 ## Development checks
 

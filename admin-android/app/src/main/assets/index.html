@@ -24,11 +24,22 @@
     <div class="setting"><div><strong>Public registration</strong><small>Keep closed during the private beta</small></div><button id="signup" class="danger-outline">Loading…</button></div></section>
    <section class="panel"><h2>Recent admin actions</h2><div id="audit" class="stack compact"></div></section>
   </section>
-  <section id="terminal" class="screen hidden"><div class="heading"><div><h1>Server access</h1><p>Private SSH terminal</p></div></div>
-   <section class="panel"><h2>SSH connection</h2><p>Use the private Tailscale hostname or address of your Linux server. This opens a trusted SSH client on your phone; an embedded terminal is not implemented yet.</p>
+  <section id="terminal" class="screen hidden"><div class="heading"><div><h1>Server terminal</h1><p id="ssh-status">Disconnected</p></div></div>
+   <section class="panel"><h2>SSH connection</h2><p>This SSH session runs inside Crewline Admin. For a private Tailscale server, install and connect Tailscale <strong>inside this GrapheneOS profile</strong>. Each profile has its own VPN and app credentials.</p>
     <label>SSH hostname<input id="ssh-host" placeholder="server.your-tailnet.ts.net" autocomplete="off"></label><label>Linux user<input id="ssh-user" value="admin" autocomplete="off"></label>
-    <label>Port<input id="ssh-port" type="number" value="22" min="1" max="65535"></label><button id="ssh-open" class="primary">Open SSH client</button>
-    <p class="note">No SSH password or private key is stored by Crewline Admin. Keep SSH restricted to your tailnet and use key-based authentication.</p></section>
+    <label>Port<input id="ssh-port" type="number" value="22" min="1" max="65535"></label>
+    <label>One-time SSH password (optional)<input id="ssh-password" type="password" autocomplete="off" placeholder="Leave blank when your public key is authorised"></label>
+    <button id="ssh-open" class="primary">Connect inside Crewline Admin</button>
+    <p class="note">The app creates a separate SSH key for each GrapheneOS profile. Your private key stays encrypted in that profile using Android Keystore. Verify the server's fingerprint on first connection.</p>
+    <details><summary>Install this profile's SSH public key on the server</summary><p>Copy the public key below into the Linux account's <code>~/.ssh/authorized_keys</code> file using your laptop or an existing trusted connection.</p>
+      <pre id="ssh-public" class="public-key">Generating public key…</pre><button id="ssh-copy-key">Copy public key</button>
+    </details></section>
+   <section class="panel terminal-panel"><div class="row"><h2>Live SSH shell</h2><button id="ssh-close" class="quiet">Disconnect</button></div>
+    <pre id="ssh-output" class="terminal-output" aria-live="off">Connect to begin a shell session.\n</pre>
+    <form id="ssh-form"><label>Command or terminal input<input id="ssh-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Enter a command"></label><button type="submit">Send ↵</button></form>
+    <div class="actions" id="terminal-keys"><button data-key="interrupt">Ctrl+C</button><button data-key="tab">Tab</button><button data-key="up">↑</button><button data-key="down">↓</button><button data-key="backspace">Backspace</button><button id="ssh-clear">Clear display</button></div>
+    <p class="note">This is an interactive shell with basic text output and special keys. Full-screen terminal applications such as Vim are not yet rendered accurately.</p>
+   </section>
    <section class="panel"><h2>Useful server commands</h2><p>Run these only after connecting to the right server.</p>
     <div class="command"><code>sudo systemctl status crewline</code></div><div class="command"><code>sudo journalctl -u crewline -n 100</code></div>
     <div class="command"><code>sudo bash deploy/health-check.sh</code></div><p class="note">Restarts, deploys and database restores remain manual terminal operations to prevent accidental downtime.</p>
